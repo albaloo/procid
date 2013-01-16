@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Procid
-// @description    Awesomeness for drupal.org.
+// @description    Interactive system supporting consensus building.
 // @icon           http://web.engr.illinois.edu/~rzilouc2/procid/images/icon.png
 // @author         Roshanak Zilouchian
 // @version        1.0
@@ -26,14 +26,13 @@ function addJQuery(callback) {
 	body1.appendChild(script);
 };
 
-// the guts of this userscript
+// the main function of this userscript
 function main() {
 
 	console.log("begin");
-	var ABSOLUTEPATH = './';//'http://web.engr.illinois.edu/~rzilouc2/procid';//'./';
+	var ABSOLUTEPATH = 'https://raw.github.com/albaloo/procid/master'; //'http://web.engr.illinois.edu/~rzilouc2/procid';//'./';
 	var commentInfos = [];
 	var criteria = [];
-	//'http://web.engr.illinois.edu/~rzilouc2/procid';//'./';
 
 	var addCSSToHeader = function() {
 		var header = document.getElementsByTagName('head')[0];
