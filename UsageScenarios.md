@@ -6,7 +6,7 @@ Procid facilitates consensus building by supporting the participants in understa
 Understanding the Current Content and Status
 ============================================
 Susan was involved at the beginning of the discussion, but she got busy with other discussions and now that she is back she needs to understand the current state of the discussion. She starts by applying the must read lens in the Time-based view, to make sure that she read all the must read comments. 
-[Figure 1](/screenshots/Demo-Home-FirstPage.png)
+[Figure 1](https://raw.github.com/albaloo/procid/master/screenshots/Demo-Home-FirstPage.png)
 
 Then, since she is interested in following the design discussion, she reviews the proposed ideas by applying the second lens. She notices that a new idea has been proposed since she left, so she clicks on the name of the proposer to see if other participants have mentioned any costs or benefits for the new idea.
 
