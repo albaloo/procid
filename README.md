@@ -20,4 +20,4 @@ Instructions to Build and Contribute
 1. Clone the git repository
 1. Import the project in Eclipse
 1. Run example.html
-1. If you don't have internet access you can change `ABSOLUTEPATH` variable in [procid.user.js](https://github.com/albaloo/procid/raw/master/procid.user.js) to "./" and run locally.
+1. If you don't have internet access you can change `ABSOLUTEPATH` and `CSSSERVERPATH` variable in [procid.user.js](https://github.com/albaloo/procid/raw/master/procid.user.js) to "./" and run locally.
