@@ -38,7 +38,7 @@ Lisa loses her temper after involving in a heated argument around a solution alt
 
 ![Figure 6](https://raw.github.com/albaloo/procid/master/screenshots/Demo-NewComment-FirstPage.png)
 
-To help participants in maintaining a welcoming and supportive atmosphere, Procid analyze the content of new comments as participants are writing them. It then compares the tone of the new comment with the median tone of all the comments and informs the user if his comment is more negative than average comments posted in the community [6].
+To help participants in maintaining a welcoming and supportive atmosphere, Procid analyze the content of new comments as participants are writing them. It then compares the tone of the new comment with the median tone of all the comments and informs the user if his comment is more negative than average comments posted in the community.
  
 Inviting other Members to Join the Discussion
 =============================================
