@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Procid
 // @description    Interactive system supporting consensus building.
-// @icon           http://web.engr.illinois.edu/~rzilouc2/procid/images/icon.png
+// @icon           https://raw.github.com/albaloo/procid/master/icon.jpg
 // @author         Roshanak Zilouchian
 // @version        1.0
 // @grant          none
@@ -30,14 +30,15 @@ function addJQuery(callback) {
 function main() {
 
 	console.log("begin");
-	var ABSOLUTEPATH = 'https://raw.github.com/albaloo/procid/master'; //'http://web.engr.illinois.edu/~rzilouc2/procid';//'./';
+	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master';
+	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
 	var commentInfos = [];
 	var criteria = [];
 
 	var addCSSToHeader = function() {
 		var header = document.getElementsByTagName('head')[0];
 		var csslink = document.createElement('link');
-		csslink.setAttribute('href', ABSOLUTEPATH + '/style.css');
+		csslink.setAttribute('href', CSSSERVERPATH + '/style.css');
 		csslink.setAttribute('rel', 'stylesheet');
 		csslink.setAttribute('type', 'text/css');
 		header.appendChild(csslink);
