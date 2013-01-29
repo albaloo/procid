@@ -428,7 +428,7 @@ function main() {
 	}
 	var createCriterion = function(lower_, upper_, id_) {
 		var criterion = {
-			id: id_,
+			id : id_,
 			lower : lower_,
 			upper : upper_,
 		};
@@ -439,17 +439,19 @@ function main() {
 		var criterion = {
 			value : value_,
 			comment : comment_,
-			id: id_
+			id : id_
 		};
 		commentInfo.criteria.push(criterion);
 		return commentInfo;
 	}
-	var findCriterion = function(commentInfo, id_){
-		var result = $.grep(commentInfo.criteria, function(e){ return e.id == id_; });
-		if(result.length == 0)
-		   return -1;
+	var findCriterion = function(commentInfo, id_) {
+		var result = $.grep(commentInfo.criteria, function(e) {
+			return e.id == id_;
+		});
+		if (result.length == 0)
+			return -1;
 		else
-		   return result[0];
+			return result[0];
 	}
 	var editCriterionValue = function(commentInfo, criterion) {
 		if ($.inArray(criterion, commentInfos.criteria) != -1)
@@ -474,10 +476,8 @@ function main() {
 			//mySvg.setAttribute("version", "1.2");
 			mySvg.setAttribute("id", "mysvg");
 			mySvg.setAttribute("height", '40');
-			mySvg.setAttribute("width", '200');
-			//mySvg.setAttribute("style", 'display: block;');
-			//mySvg.setAttribute("baseProfile", "tiny");
-			mySvg.setAttribute("viewBox", "0 0 200 40");
+			mySvg.setAttribute("width", '210');
+			mySvg.setAttribute("viewBox", "0 0 210 40");
 			mySvg.setAttribute("preserveAspectRatio", "xMinYMin");
 			divCriterion.appendChild(mySvg);
 
@@ -492,42 +492,75 @@ function main() {
 			lowerLabel.setAttribute("y", 30);
 			lowerLabel.setAttribute("fill", "black");
 			lowerLabel.textContent = this.lower;
-			//"Simple";
 			mySvg.appendChild(lowerLabel);
 
-			//<svg:line x1="0" y1="0" x2="170" y2="50" stroke="gray" stroke-width="1"/>
-			var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-			line.setAttribute("x1", 20);
-			line.setAttribute("y1", 10);
-			line.setAttribute("x2", 140);
-			line.setAttribute("y2", 10);
-			line.setAttribute("stroke", color);
-			mySvg.appendChild(line);
 			var id = this.id;
 			var criteriaValueArray = [0, 1, 2, 3, 4];
 			$.each(criteriaValueArray, function() {
-				var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 				var thisValue = "" + this;
-				shape.setAttribute("id", "circle"+commentInfo.title.substr(1)+id+thisValue);
+				if (this != 4) {
+					var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+					line.setAttribute("id", "line" + commentInfo.title.substr(1) + id + thisValue);
+					line.setAttribute("x1", 20 + this * 30);
+					line.setAttribute("y1", 10);
+					line.setAttribute("x2", 20 + (this + 1) * 30);
+					line.setAttribute("y2", 10);
+					line.setAttribute("stroke", color);
+					mySvg.appendChild(line);
+				}
+
+				var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+				shape.setAttribute("style", "cursor: pointer");
+				shape.setAttribute("id", "circle" + commentInfo.title.substr(1) + id + thisValue);
 				shape.setAttribute("cx", 20 + this * 30);
 				shape.setAttribute("cy", 10);
-				shape.setAttribute("r", 4);
+				shape.setAttribute("r", 5);
 				shape.setAttribute("stroke", color);
 				shape.setAttribute("fill", color);
+				shape.onmouseover = function(e) {
+
+				}
 				shape.onclick = function(e) {
 					var prevValue = findCriterion(commentInfo, id);
-					if(prevValue == -1){
+					if (prevValue == -1) {
 						shape.setAttribute("fill", "#0D7DC1");
+						shape.setAttribute("stroke", "#0D7DC1");
 						addCriterionValue(commentInfo, thisValue, "I think this works", id);
-					}else {
-						$("#"+"circle"+commentInfo.title.substr(1)+id+prevValue.value).attr("fill", color);
-						commentInfo.criteria = $.grep(commentInfo.criteria, function(e){ return e.id != id; });
+						var value = 0;
+						while (value < thisValue) {
+							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
+							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+							value++;
+						}
+					} else {
+						if (prevValue.value > thisValue) {
+							var value = prevValue.value;
+							while (value > thisValue) {
+								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", color);
+								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+								$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+								value--;
+							}
+							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+						} else {
+							var value = prevValue.value;
+							while (value < thisValue) {
+								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
+								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+								$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+								value++;
+							}
+						}
+						commentInfo.criteria = $.grep(commentInfo.criteria, function(e) {
+							return e.id != id;
+						});
 						shape.setAttribute("fill", "#0D7DC1");
+						shape.setAttribute("stroke", "#0D7DC1");
 						addCriterionValue(commentInfo, thisValue, "I think this works", id);
 					}
 				};
 				mySvg.appendChild(shape);
-
 			});
 
 			//<text x="0" y="15" fill="red">I love SVG</text>
@@ -536,8 +569,18 @@ function main() {
 			upperLabel.setAttribute("y", 30);
 			upperLabel.setAttribute("fill", "black");
 			upperLabel.textContent = this.upper;
-			//"Complex";
 			mySvg.appendChild(upperLabel);
+
+			//TODO: put an svg image with ? after selection, click on it and you'll be redirected to the new comment page
+			//<image x="200" y="200" width="100px" height="100px" xlink:href="myimage.png">
+			/*var reason = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			reason.setAttribute("x", 20 + 4 * 30 + 10);
+			reason.setAttribute("y", 20);
+			//reason.setAttribute("width", 40);
+			//reason.setAttribute("height", 40);
+			//reason.setAttribute("fill", "black");
+			reason.textContent = "Explain why...";
+			mySvg.appendChild(reason);*/
 
 			var comment_value = findCriterion(commentInfo, id);
 			if (comment_value != -1) {
