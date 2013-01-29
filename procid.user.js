@@ -240,8 +240,16 @@ function main() {
 		var array_author_hrefs = $("div[class='submitted'] a").map(function() {
 			return $(this).attr('href');
 		});
-		var array_contents = $("div[class='content'] p").map(function() {
-			return $(this).text();
+		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
+			var contents = $(this).children("p");
+			console.log("contetns: " + contents);
+			console.log("this: " + $(this).children("p").text());
+			var returnValue = "";
+			$.each(contents, function() {
+				returnValue += $(this).text();
+				console.log("return value: " + returnValue);
+			});
+			return returnValue;//$(this).text();
 		});
 
 		var len = array_title.length;
@@ -249,8 +257,8 @@ function main() {
 			var comment = {
 				title : array_title[i],
 				link : array_links[i],
-				author : array_author[i],
-				authorLink : array_author_hrefs[i],
+				author : array_author[i+1],
+				authorLink : array_author_hrefs[i+1],
 				content : array_contents[i],
 				tags : [],
 				status : "Ongoing",
@@ -332,10 +340,31 @@ function main() {
 		createLense('patch', 'procid-lenses', 'View Patches');
 
 		initializeCommentInfo();
-		$.each(commentInfos, function() {
-			findTags(this);
-			applyTags(this);
+
+		//TODO: send to server
+
+		$.getJSON("input.json", function(data) {
+			$.each(data.issueComments, function(i, comment) {
+				commentInfos[i].tags = comment.tags;
+				applyTags(commentInfos[i]);
+				//var url = "http://" + comment.name + ".com";
+				
+			});
 		});
+
+		//Random Data
+		/*$.each(commentInfos, function() {
+		findTags(this);
+		applyTags(this);
+		});
+
+		//Get the Json Data
+		 var dat = JSON.stringify(commentInfos);
+		 var temp = document.createElement('h3');
+		 temp.setAttribute('id', 'procid-lenses-temp');
+		 temp.innerHTML = dat;
+		 $("#procid-left-panel-body").append(temp);*/
+
 	}
 	var createLabel = function(name) {
 		var label = document.createElement('h3');
@@ -574,13 +603,13 @@ function main() {
 			//TODO: put an svg image with ? after selection, click on it and you'll be redirected to the new comment page
 			//<image x="200" y="200" width="100px" height="100px" xlink:href="myimage.png">
 			/*var reason = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			reason.setAttribute("x", 20 + 4 * 30 + 10);
-			reason.setAttribute("y", 20);
-			//reason.setAttribute("width", 40);
-			//reason.setAttribute("height", 40);
-			//reason.setAttribute("fill", "black");
-			reason.textContent = "Explain why...";
-			mySvg.appendChild(reason);*/
+			 reason.setAttribute("x", 20 + 4 * 30 + 10);
+			 reason.setAttribute("y", 20);
+			 //reason.setAttribute("width", 40);
+			 //reason.setAttribute("height", 40);
+			 //reason.setAttribute("fill", "black");
+			 reason.textContent = "Explain why...";
+			 mySvg.appendChild(reason);*/
 
 			var comment_value = findCriterion(commentInfo, id);
 			if (comment_value != -1) {
