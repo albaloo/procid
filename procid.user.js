@@ -242,14 +242,11 @@ function main() {
 		});
 		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
 			var contents = $(this).children("p");
-			console.log("contetns: " + contents);
-			console.log("this: " + $(this).children("p").text());
 			var returnValue = "";
 			$.each(contents, function() {
-				returnValue += $(this).text();
-				console.log("return value: " + returnValue);
+				returnValue += $(this).text();	
 			});
-			return returnValue;//$(this).text();
+			return returnValue;
 		});
 
 		var len = array_title.length;
@@ -343,6 +340,7 @@ function main() {
 
 		//TODO: send to server
 
+$.ajaxSetup({'async': false});
 		$.getJSON("input.json", function(data) {
 			$.each(data.issueComments, function(i, comment) {
 				commentInfos[i].tags = comment.tags;
@@ -641,10 +639,15 @@ function main() {
 		var hr2 = document.createElement('hr');
 		$("#procid-idea-page-wrapper").append(hr2);
 
+		console.log("info:" + commentInfos.length);
+
 		//Body
 		for (var i = 0; i < commentInfos.length; i++) {
 
+            console.log("tags" + commentInfos[i].tags[0]);
 			if ($.inArray("idea", commentInfos[i].tags) != -1 && commentInfos[i].content != "") {
+				
+				console.log("aya?:" + commentInfos.length);
 
 				var divIdeaBlock = document.createElement('div');
 				divIdeaBlock.setAttribute('id', 'procid-idea-block');
