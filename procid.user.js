@@ -31,7 +31,8 @@ function main() {
 
 	console.log("begin");
 	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master';
-	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
+	var CSSSERVERPATH = '.';
+	//'http://web.engr.illinois.edu/~rzilouc2/procid';
 	var commentInfos = [];
 	var criteria = [];
 
@@ -244,7 +245,28 @@ function main() {
 			var contents = $(this).children("p");
 			var returnValue = "";
 			$.each(contents, function() {
-				returnValue += $(this).text();	
+				returnValue += $(this).text();
+			});
+			return returnValue;
+		});
+		//<tr class=" even"><td><a href="http://drupal.org/files/issues/password-strength-meter.png">password-strength-meter.png</a></td><td>30.69 KB</td><td><em>Ignored:  Check issue status.</td><td><em>None</em></td><td><em>None</em></td> </tr>
+		//<img src="http://drupal.org/files/issues/ms-passport.png" alt="MS Password Strength Meter" />
+		var array_images = $("div[class='content'] div[class='clear-block']").map(function() {
+			var returnValue = " ";
+			var contents = $(this).find("a");
+			$.each(contents, function() {
+				var link = $(this).attr("href");
+				if (link.match(/png$/) || link.match(/jpg$/)) {
+					returnValue = link;
+				}
+			});
+
+			var imgs = $(this).find("img");
+			$.each(imgs, function() {
+				var link = $(this).attr("src");
+				if (link.match(/png$/) || link.match(/jpg$/)) {
+					returnValue = link;
+				}
 			});
 			return returnValue;
 		});
@@ -254,14 +276,15 @@ function main() {
 			var comment = {
 				title : array_title[i],
 				link : array_links[i],
-				author : array_author[i+1],
-				authorLink : array_author_hrefs[i+1],
+				author : array_author[i + 1],
+				authorLink : array_author_hrefs[i + 1],
 				content : array_contents[i],
 				tags : [],
 				status : "Ongoing",
 				comments : [],
 				idea : "#1",
-				criteria : []
+				criteria : [],
+				image : array_images[i]
 			};
 			commentInfos.push(comment);
 		}
@@ -340,23 +363,26 @@ function main() {
 
 		//TODO: send to server
 
-$.ajaxSetup({'async': false});
+		$.ajaxSetup({
+			'async' : false
+		});
+
 		$.getJSON("input.json", function(data) {
 			$.each(data.issueComments, function(i, comment) {
 				commentInfos[i].tags = comment.tags;
 				applyTags(commentInfos[i]);
 				//var url = "http://" + comment.name + ".com";
-				
+
 			});
 		});
 
 		//Random Data
 		/*$.each(commentInfos, function() {
-		findTags(this);
-		applyTags(this);
-		});
+		 findTags(this);
+		 applyTags(this);
+		 });
 
-		//Get the Json Data
+		 //Get the Json Data
 		 var dat = JSON.stringify(commentInfos);
 		 var temp = document.createElement('h3');
 		 temp.setAttribute('id', 'procid-lenses-temp');
@@ -364,12 +390,45 @@ $.ajaxSetup({'async': false});
 		 $("#procid-left-panel-body").append(temp);*/
 
 	}
-	var createLabel = function(name) {
+	var createLabel = function(name, link) {
 		var label = document.createElement('h3');
 		label.setAttribute('id', 'procid-' + name + '-label');
 		label.setAttribute('class', 'ideaPage-header-label');
 		label.innerHTML = name;
 		$("#procid-ideaPage-header").append(label);
+
+		var link1 = document.createElement('a');
+		link1.setAttribute('id', 'procid-edit-link');
+		link1.setAttribute('href', "#");
+		link1.innerHTML = link;
+		link1.onclick = function(e) {
+			if (link === "(edit)") {
+				var overlay = document.createElement("div");
+				overlay.setAttribute("id", "procid-overlay");
+				overlay.onclick = function(e){ 
+					document.body.removeChild(document.getElementById("procid-overlay")); 
+					document.body.removeChild(document.getElementById("procid-overlay-div"));
+				};
+				$('body').append(overlay);
+
+				var overlayDiv = document.createElement("img");
+				overlayDiv.setAttribute("id", "procid-overlay-div");
+				$('body').append(overlayDiv);
+				
+				//<a id="close" href="#"></a>
+				var overlayDivClose = document.createElement("img");
+				overlayDivClose.setAttribute("id", "procid-overlay-div-close");
+				overlayDivClose.setAttribute("src", "./images/closeButton.png");
+				//overlayDivClose.onclick = function(e){ ocument.body.removeChild(document.getElementById("procid-overlay")) };
+				overlayDiv.appendChild(overlayDivClose);
+
+				
+				//document.body.removeChild(document.getElementById("overlay"));
+			} else if (link === "(add)") {
+
+			}
+		};
+		label.appendChild(link1);
 	}
 	var createIdeaImage = function(divIdeaBlock, commentInfo) {
 		var divIdea = document.createElement('div');
@@ -383,17 +442,17 @@ $.ajaxSetup({'async': false});
 		link1.setAttribute('class', 'ideaPage-link');
 		link1.innerHTML = "by \t" + commentInfo.author;
 
-		//if image attachment
-		/*var image1 = document.createElement('img');
-		image1.setAttribute('id', 'procid-idea-image');
-		image1.setAttribute('class', 'ideaPage-image');
-		image1.setAttribute('src', ABSOLUTEPATH + '/images/patch.png');
-		divIdea.appendChild(image1);*/
-
-		//else
 		var divIdeaImage = document.createElement('div');
 		divIdeaImage.setAttribute('id', 'procid-idea-div-image');
-		divIdeaImage.textContent = commentInfo.content;
+
+		if (commentInfo.image != " ") {//image attachment
+			var image1 = document.createElement('img');
+			image1.setAttribute('id', 'procid-ideaPage-image');
+			image1.setAttribute('src', commentInfo.image);
+			divIdeaImage.appendChild(image1);
+		} else {
+			divIdeaImage.textContent = commentInfo.content;
+		}
 		divIdea.appendChild(divIdeaImage);
 		divIdea.appendChild(link1);
 	}
@@ -630,10 +689,10 @@ $.ajaxSetup({'async': false});
 		ideaPageHeader.setAttribute('id', 'procid-ideaPage-header');
 		$("#procid-idea-page-wrapper").append(ideaPageHeader);
 
-		createLabel('Idea');
-		createLabel('Status');
-		createLabel('Comments');
-		createLabel('Criteria');
+		createLabel('Idea', "");
+		createLabel('Status', "");
+		createLabel('Criteria ', "(edit)");
+		createLabel('Comments ', "(add)");
 
 		//<hr/>
 		var hr2 = document.createElement('hr');
@@ -644,18 +703,14 @@ $.ajaxSetup({'async': false});
 		//Body
 		for (var i = 0; i < commentInfos.length; i++) {
 
-            console.log("tags" + commentInfos[i].tags[0]);
 			if ($.inArray("idea", commentInfos[i].tags) != -1 && commentInfos[i].content != "") {
-				
-				console.log("aya?:" + commentInfos.length);
-
 				var divIdeaBlock = document.createElement('div');
 				divIdeaBlock.setAttribute('id', 'procid-idea-block');
 
 				createIdeaImage(divIdeaBlock, commentInfos[i]);
 				createIdeaStatus(divIdeaBlock, commentInfos[i]);
-				createIdeaComments(divIdeaBlock, commentInfos[i]);
 				createIdeaCriteria(divIdeaBlock, commentInfos[i]);
+				createIdeaComments(divIdeaBlock, commentInfos[i]);
 
 			}
 			$("#procid-idea-page-wrapper").append(divIdeaBlock);
