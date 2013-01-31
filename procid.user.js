@@ -419,7 +419,40 @@ function main() {
 		$("#procid-overlay-div").append(label);
 
 		var hr = document.createElement('hr');
+		hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 		$("#procid-overlay-div").append(hr);
+		
+		$.each(criteria, function() {
+			//<input type='text' name='txt'>
+			var divCriteria = document.createElement('div');
+			divCriteria.setAttribute('id', 'procid-overlay-div-block');
+			$("#procid-overlay-div").append(divCriteria);
+			
+			var lowerLabel = document.createElement('label');
+			lowerLabel.setAttribute('id', 'procid-criteria-lower-label');
+			lowerLabel.innerHTML = "Lower";
+			divCriteria.appendChild(lowerLabel);
+			
+			var lower = document.createElement('input');
+			lower.setAttribute('id', 'procid-criteria-lower');
+			lower.setAttribute('type', 'text');
+			lower.setAttribute('name', 'lower');
+			divCriteria.appendChild(lower);
+			
+			var higherLabel = document.createElement('label');
+			higherLabel.setAttribute('id', 'procid-criteria-higher-label');
+			higherLabel.innerHTML = "Higher";
+			divCriteria.appendChild(higherLabel);
+			
+			var higher = document.createElement('input');
+			higher.setAttribute('id', 'procid-criteria-higher');
+			higher.setAttribute('type', 'text');
+			higher.setAttribute('name', 'higher');
+			divCriteria.appendChild(higher);
+			
+			
+		});
+
 	}
 	var enableAddcomment = function() {
 		if ($("div[id='procid-idea-comments'] a").hasClass('show')) {
@@ -734,6 +767,7 @@ function main() {
 
 		//<hr/>
 		var hr2 = document.createElement('hr');
+		hr2.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 		$("#procid-idea-page-wrapper").append(hr2);
 
 		console.log("info:" + commentInfos.length);
@@ -861,6 +895,7 @@ function main() {
 	createProcidHeader();
 
 	var hr = document.createElement('hr');
+	hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 	$("#procid-left-panel-header").append(hr);
 
 	createCriterion("Simple", "Complex", "1");
