@@ -390,6 +390,45 @@ function main() {
 		 $("#procid-left-panel-body").append(temp);*/
 
 	}
+	var createOverlay = function() {
+		var overlay = document.createElement("div");
+		overlay.setAttribute("id", "procid-overlay");
+		overlay.onclick = function(e) {
+			document.body.removeChild(document.getElementById("procid-overlay"));
+			document.body.removeChild(document.getElementById("procid-overlay-div"));
+		};
+		$('body').append(overlay);
+
+		var overlayDiv = document.createElement("div");
+		overlayDiv.setAttribute("id", "procid-overlay-div");
+		$('body').append(overlayDiv);
+
+		//<a id="close" href="#"></a>
+		var overlayDivClose = document.createElement("img");
+		overlayDivClose.setAttribute("id", "procid-overlay-div-close");
+		overlayDivClose.setAttribute("src", ABSOLUTEPATH + '/images/closeButton.png');
+		overlayDivClose.onclick = function(e) {
+			document.body.removeChild(document.getElementById("procid-overlay"));
+			document.body.removeChild(document.getElementById("procid-overlay-div"));
+		};
+		$("#procid-overlay-div").append(overlayDivClose);
+
+		var label = document.createElement('h3');
+		label.setAttribute('id', 'procid-overlay-header-label');
+		label.innerHTML = "Edit Criteria";
+		$("#procid-overlay-div").append(label);
+
+		var hr = document.createElement('hr');
+		$("#procid-overlay-div").append(hr);
+	}
+	var enableAddcomment = function() {
+		if ($("div[id='procid-idea-comments'] a").hasClass('show')) {
+			$("div[id='procid-idea-comments'] a").attr('class', 'hide');
+		} else {
+			$("div[id='procid-idea-comments'] a").attr('class', 'show');
+		}
+		return true;
+	}
 	var createLabel = function(name, link) {
 		var label = document.createElement('h3');
 		label.setAttribute('id', 'procid-' + name + '-label');
@@ -403,29 +442,9 @@ function main() {
 		link1.innerHTML = link;
 		link1.onclick = function(e) {
 			if (link === "(edit)") {
-				var overlay = document.createElement("div");
-				overlay.setAttribute("id", "procid-overlay");
-				overlay.onclick = function(e){ 
-					document.body.removeChild(document.getElementById("procid-overlay")); 
-					document.body.removeChild(document.getElementById("procid-overlay-div"));
-				};
-				$('body').append(overlay);
-
-				var overlayDiv = document.createElement("img");
-				overlayDiv.setAttribute("id", "procid-overlay-div");
-				$('body').append(overlayDiv);
-				
-				//<a id="close" href="#"></a>
-				var overlayDivClose = document.createElement("img");
-				overlayDivClose.setAttribute("id", "procid-overlay-div-close");
-				overlayDivClose.setAttribute("src", "./images/closeButton.png");
-				//overlayDivClose.onclick = function(e){ ocument.body.removeChild(document.getElementById("procid-overlay")) };
-				overlayDiv.appendChild(overlayDivClose);
-
-				
-				//document.body.removeChild(document.getElementById("overlay"));
+				createOverlay();
 			} else if (link === "(add)") {
-
+				enableAddcomment();
 			}
 		};
 		label.appendChild(link1);
@@ -495,6 +514,16 @@ function main() {
 			comment2.setAttribute('src', ABSOLUTEPATH + '/images/happy-face.png');
 			divComments.appendChild(comment2);
 
+			$('<a />').attr({
+				id : 'procid-addcomment-link',
+				href : '#',
+				rel : 'tooltip',
+				class : 'unselected',
+				title : "Add a new comment"
+			}).click(function addNewComment(evt) {
+				//TODO: add a new comment
+			}).appendTo("#procid-idea-comments");
+
 		} else if (randomComments == 2) {
 			var comment = document.createElement('img');
 			comment.setAttribute('id', 'procid-comment-image');
@@ -505,11 +534,31 @@ function main() {
 			comment2.setAttribute('id', 'procid-comment-image');
 			comment2.setAttribute('src', ABSOLUTEPATH + '/images/nuetral-face.png');
 			divComments.appendChild(comment2);
+			
+			$('<a />').attr({
+				id : 'procid-addcomment-link',
+				href : '#',
+				rel : 'tooltip',
+				class : 'unselected',
+				title : "Add a new comment"
+			}).click(function addNewComment(evt) {
+				//TODO: add a new comment
+			}).appendTo("#procid-idea-comments");
 		} else if (randomComments == 3) {
 			var comment = document.createElement('img');
 			comment.setAttribute('id', 'procid-comment-image');
 			comment.setAttribute('src', ABSOLUTEPATH + '/images/sad-face.png');
 			divComments.appendChild(comment);
+			
+			$('<a />').attr({
+				id : 'procid-addcomment-link',
+				href : '#',
+				rel : 'tooltip',
+				class : 'unselected',
+				title : "Add a new comment"
+			}).click(function addNewComment(evt) {
+				//TODO: add a new comment
+			}).appendTo("#procid-idea-comments");
 		}
 	}
 	var createCriterion = function(lower_, upper_, id_) {
