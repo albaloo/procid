@@ -548,7 +548,7 @@ function main() {
 		addCommentImg.setAttribute('src', ABSOLUTEPATH + '/images/blue-plus.png');
 		addComment.appendChild(addCommentImg);
 		
-		//addComment.innerHTML = "Comment";
+		addComment.innerHTML += "Comment";
 	}
 	var createCriterion = function(lower_, upper_, id_) {
 		var criterion = {
