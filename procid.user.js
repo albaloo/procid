@@ -514,16 +514,6 @@ function main() {
 			comment2.setAttribute('src', ABSOLUTEPATH + '/images/happy-face.png');
 			divComments.appendChild(comment2);
 
-			$('<a />').attr({
-				id : 'procid-addcomment-link',
-				href : '#',
-				rel : 'tooltip',
-				class : 'unselected',
-				title : "Add a new comment"
-			}).click(function addNewComment(evt) {
-				//TODO: add a new comment
-			}).appendTo("#procid-idea-comments");
-
 		} else if (randomComments == 2) {
 			var comment = document.createElement('img');
 			comment.setAttribute('id', 'procid-comment-image');
@@ -534,32 +524,31 @@ function main() {
 			comment2.setAttribute('id', 'procid-comment-image');
 			comment2.setAttribute('src', ABSOLUTEPATH + '/images/nuetral-face.png');
 			divComments.appendChild(comment2);
-			
-			$('<a />').attr({
-				id : 'procid-addcomment-link',
-				href : '#',
-				rel : 'tooltip',
-				class : 'unselected',
-				title : "Add a new comment"
-			}).click(function addNewComment(evt) {
-				//TODO: add a new comment
-			}).appendTo("#procid-idea-comments");
+
 		} else if (randomComments == 3) {
 			var comment = document.createElement('img');
 			comment.setAttribute('id', 'procid-comment-image');
 			comment.setAttribute('src', ABSOLUTEPATH + '/images/sad-face.png');
 			divComments.appendChild(comment);
-			
-			$('<a />').attr({
-				id : 'procid-addcomment-link',
-				href : '#',
-				rel : 'tooltip',
-				class : 'unselected',
-				title : "Add a new comment"
-			}).click(function addNewComment(evt) {
-				//TODO: add a new comment
-			}).appendTo("#procid-idea-comments");
 		}
+
+		var addComment = document.createElement('a');
+		addComment.setAttribute('id', 'procid-addcomment-link');
+		addComment.setAttribute('href', "#");
+		addComment.setAttribute('rel', "tooltip");
+		addComment.setAttribute('class', "hide");
+		addComment.setAttribute('title', "Add a new comment");
+		addComment.onclick = function(e) {
+			//TODO: add a new comment;
+		};
+		divComments.appendChild(addComment);
+
+		var addCommentImg = document.createElement('img');
+		addCommentImg.setAttribute('id', 'procid-addcomment-image');
+		addCommentImg.setAttribute('src', ABSOLUTEPATH + '/images/blue-plus.png');
+		addComment.appendChild(addCommentImg);
+		
+		//addComment.innerHTML = "Comment";
 	}
 	var createCriterion = function(lower_, upper_, id_) {
 		var criterion = {
