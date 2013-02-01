@@ -791,27 +791,11 @@ function main() {
 	}
 	var findPeopletoInvite = function() {
 		var suggestedAuthors = [];
-		var len = commentInfos.length;
-		for (var i = 0; i < len; i++) {
-			var randomAuthor = Math.floor(Math.random() * 9);
-
-			if (randomAuthor == 1) {
-
-				var randomDes = Math.floor(Math.random() * 3);
-				var des = "Provided patch and patch reviews in 6 discussions with 4 mutual participants.";
-				if (randomDes == 1)
-					des = "Participated in 5 discussions that reached consensus.";
-				else if (randomDes == 2)
-					des = "Participated in previous Discussions with 7 participants.";
-
-				var suggestedAuthor = {
-					author : commentInfos[i].author,
-					authorLink : commentInfos[i].authorLink,
-					description : des,
-				};
-				suggestedAuthors.push(suggestedAuthor);
-			}
-		}
+		$.getJSON("invite.json", function(data) {
+			$.each(data.invitedAuthors, function(i, author) {
+				suggestedAuthors[i] = author;
+			});
+		});
 		return suggestedAuthors;
 	}
 	var createInvitePageBody = function() {
@@ -822,6 +806,8 @@ function main() {
 		var suggestedPeaple = findPeopletoInvite();
 		for (var i = 0; i < suggestedPeaple.length; i++) {
 
+console.log("author" + suggestedPeaple[i].description);
+
 			var divInviteBlock = document.createElement('div');
 			divInviteBlock.setAttribute('id', 'procid-invite-block');
 
@@ -829,13 +815,13 @@ function main() {
 			divAuthorName.setAttribute('id', 'procid-author-name');
 			divAuthorName.setAttribute('class', 'procid-invite-block-cell');
 			divAuthorName.textContent = suggestedPeaple[i].author;
-			$("#procid-invite-block").append(divAuthorName);
+			divInviteBlock.appendChild(divAuthorName);
 
 			var divAuthorDescription = document.createElement('div');
 			divAuthorDescription.setAttribute('id', 'procid-author-description');
 			divAuthorDescription.setAttribute('class', 'procid-invite-block-cell');
 			divAuthorDescription.textContent = suggestedPeaple[i].description;
-			$("#procid-invite-block").append(divAuthorDescription);
+			divInviteBlock.appendChild(divAuthorDescription);
 
 			var divInviteLink = document.createElement('a');
 			divInviteLink.setAttribute('id', 'procid-invite-invitationlink');
@@ -849,7 +835,7 @@ function main() {
 				return true;
 			};
 
-			$("#procid-invite-block").append(divInviteLink);
+			divInviteBlock.appendChild(divInviteLink);
 			$("#procid-invite-page-wrapper").append(divInviteBlock);
 
 		}
