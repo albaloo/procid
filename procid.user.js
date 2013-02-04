@@ -421,36 +421,49 @@ function main() {
 		var hr = document.createElement('hr');
 		hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 		$("#procid-overlay-div").append(hr);
-		
+
 		$.each(criteria, function() {
 			//<input type='text' name='txt'>
 			var divCriteria = document.createElement('div');
 			divCriteria.setAttribute('id', 'procid-overlay-div-block');
 			$("#procid-overlay-div").append(divCriteria);
-			
+
 			var lowerLabel = document.createElement('label');
 			lowerLabel.setAttribute('id', 'procid-criteria-lower-label');
 			lowerLabel.innerHTML = "Lower";
 			divCriteria.appendChild(lowerLabel);
-			
+
 			var lower = document.createElement('input');
 			lower.setAttribute('id', 'procid-criteria-lower');
 			lower.setAttribute('type', 'text');
 			lower.setAttribute('name', 'lower');
+			lower.value = this.lower;
 			divCriteria.appendChild(lower);
+
+			var upperLabel = document.createElement('label');
+			upperLabel.setAttribute('id', 'procid-criteria-upper-label');
+			upperLabel.innerHTML = "Upper";
+			divCriteria.appendChild(upperLabel);
+
+			var upper = document.createElement('input');
+			upper.setAttribute('id', 'procid-criteria-upper');
+			upper.setAttribute('type', 'text');
+			upper.setAttribute('name', 'higher');
+			upper.value = this.upper;
+			divCriteria.appendChild(upper);
 			
-			var higherLabel = document.createElement('label');
-			higherLabel.setAttribute('id', 'procid-criteria-higher-label');
-			higherLabel.innerHTML = "Higher";
-			divCriteria.appendChild(higherLabel);
-			
-			var higher = document.createElement('input');
-			higher.setAttribute('id', 'procid-criteria-higher');
-			higher.setAttribute('type', 'text');
-			higher.setAttribute('name', 'higher');
-			divCriteria.appendChild(higher);
-			
-			
+			var descriptionLabel = document.createElement('label');
+			descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
+			descriptionLabel.innerHTML = "Description";
+			divCriteria.appendChild(descriptionLabel);
+
+			var description = document.createElement('input');
+			description.setAttribute('id', 'procid-criteria-description');
+			description.setAttribute('type', 'text');
+			description.setAttribute('name', 'description');
+			description.value = this.description;
+			divCriteria.appendChild(description);
+
 		});
 
 	}
@@ -580,14 +593,15 @@ function main() {
 		addCommentImg.setAttribute('id', 'procid-addcomment-image');
 		addCommentImg.setAttribute('src', ABSOLUTEPATH + '/images/blue-plus.png');
 		addComment.appendChild(addCommentImg);
-		
+
 		addComment.innerHTML += "Comment";
 	}
-	var createCriterion = function(lower_, upper_, id_) {
+	var createCriterion = function(lower_, upper_, id_, description_) {
 		var criterion = {
 			id : id_,
 			lower : lower_,
 			upper : upper_,
+			description : description_
 		};
 		criteria.push(criterion);
 		return criterion;
@@ -648,8 +662,13 @@ function main() {
 			lowerLabel.setAttribute("x", 0);
 			lowerLabel.setAttribute("y", 30);
 			lowerLabel.setAttribute("fill", "black");
+			lowerLabel.setAttribute("title", this.description);
 			lowerLabel.textContent = this.lower;
 			mySvg.appendChild(lowerLabel);
+
+			var lowerLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+			lowerLabelTitle.textContent = this.description;
+			lowerLabel.appendChild(lowerLabelTitle);
 
 			var id = this.id;
 			var criteriaValueArray = [0, 1, 2, 3, 4];
@@ -727,6 +746,10 @@ function main() {
 			upperLabel.setAttribute("fill", "black");
 			upperLabel.textContent = this.upper;
 			mySvg.appendChild(upperLabel);
+			
+			var upperLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+			upperLabelTitle.textContent = this.description;
+			upperLabel.appendChild(upperLabelTitle);
 
 			//TODO: put an svg image with ? after selection, click on it and you'll be redirected to the new comment page
 			//<image x="200" y="200" width="100px" height="100px" xlink:href="myimage.png">
@@ -806,8 +829,6 @@ function main() {
 		var suggestedPeaple = findPeopletoInvite();
 		for (var i = 0; i < suggestedPeaple.length; i++) {
 
-console.log("author" + suggestedPeaple[i].description);
-
 			var divInviteBlock = document.createElement('div');
 			divInviteBlock.setAttribute('id', 'procid-invite-block');
 
@@ -884,9 +905,9 @@ console.log("author" + suggestedPeaple[i].description);
 	hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 	$("#procid-left-panel-header").append(hr);
 
-	createCriterion("Simple", "Complex", "1");
-	createCriterion("Explains", "Doesn't Explain", "2");
-	createCriterion("Less", "More", "3");
+	createCriterion("Simple", "Complex", "1", "The text should be simple.");
+	createCriterion("Explains", "Doesn't Explain", "2", "The text should be explanatory.");
+	createCriterion("Less", "More", "3", "We need less information.");
 
 	createHomePageBody();
 	createIdeaPageBody();
