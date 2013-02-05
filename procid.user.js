@@ -421,23 +421,32 @@ function main() {
 		var hr = document.createElement('hr');
 		hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 		$("#procid-overlay-div").append(hr);
-
+		
+		var tempCriteria = [];
+		var i = 0;
 		$.each(criteria, function() {
 			//<input type='text' name='txt'>
 			var divCriteria = document.createElement('div');
 			divCriteria.setAttribute('id', 'procid-overlay-div-block');
 			$("#procid-overlay-div").append(divCriteria);
 
+			tempCriteria.push(this);
+			
 			var lowerLabel = document.createElement('label');
 			lowerLabel.setAttribute('id', 'procid-criteria-lower-label');
 			lowerLabel.innerHTML = "Lower";
 			divCriteria.appendChild(lowerLabel);
 
 			var lower = document.createElement('input');
-			lower.setAttribute('id', 'procid-criteria-lower');
+			lower.setAttribute('id', 'procid-criteria-lower'+this.id);
 			lower.setAttribute('type', 'text');
 			lower.setAttribute('name', 'lower');
 			lower.value = this.lower;
+			$("#procid-criteria-lower"+this.id).bind("keyup change", function() {
+				console.log("i: " +  i);
+				tempCriteria[i].lower = this.value;
+				
+			});
 			divCriteria.appendChild(lower);
 
 			var upperLabel = document.createElement('label');
@@ -446,25 +455,56 @@ function main() {
 			divCriteria.appendChild(upperLabel);
 
 			var upper = document.createElement('input');
-			upper.setAttribute('id', 'procid-criteria-upper');
+			upper.setAttribute('id', 'procid-criteria-upper'+this.id);
 			upper.setAttribute('type', 'text');
 			upper.setAttribute('name', 'higher');
 			upper.value = this.upper;
+			$("#procid-criteria-upper"+this.id).bind("keyup change", function() {
+				tempCriteria[i].upper = this.value;
+			});
 			divCriteria.appendChild(upper);
-			
+
 			var descriptionLabel = document.createElement('label');
 			descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
 			descriptionLabel.innerHTML = "Description";
 			divCriteria.appendChild(descriptionLabel);
-
+			
 			var description = document.createElement('input');
-			description.setAttribute('id', 'procid-criteria-description');
+			description.setAttribute('id', 'procid-criteria-description'+this.id);
 			description.setAttribute('type', 'text');
 			description.setAttribute('name', 'description');
 			description.value = this.description;
+			$("#procid-criteria-description"+this.id).bind("keyup change", function() {
+				tempCriteria[i].description = this.value;
+			});
 			divCriteria.appendChild(description);
-
+			
+			i++;
 		});
+
+		var saveButton = document.createElement('input');
+		saveButton.setAttribute('id', 'procid-criteria-save');
+		saveButton.setAttribute('type', 'button');
+		saveButton.value = "Save";
+		saveButton.onclick = function(e) {
+			var i = 0;
+			$.each(tempCriteria, function() {
+				console.log("befor critr: " + criteria[i].lower);
+				console.log("id: " + this.id);
+				criteria[i].lower = $("#procid-criteria-lower"+this.id).val();
+				console.log("critr: " + criteria[i].lower);
+				//console.log("critr: blah blah blah" + this.upper);
+				i++;
+				
+				
+			});
+			
+			document.body.removeChild(document.getElementById("procid-overlay"));
+			document.body.removeChild(document.getElementById("procid-overlay-div"));
+		};
+		$("#procid-overlay-div").append(saveButton);
+
+		//<input type="button" onclick="save()" value="Save" /><br/>
 
 	}
 	var enableAddcomment = function() {
@@ -746,7 +786,7 @@ function main() {
 			upperLabel.setAttribute("fill", "black");
 			upperLabel.textContent = this.upper;
 			mySvg.appendChild(upperLabel);
-			
+
 			var upperLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
 			upperLabelTitle.textContent = this.description;
 			upperLabel.appendChild(upperLabelTitle);
