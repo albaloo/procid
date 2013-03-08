@@ -421,9 +421,8 @@ function main() {
 		var hr = document.createElement('hr');
 		hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 		$("#procid-overlay-div").append(hr);
-		
+
 		var tempCriteria = [];
-		var i = 0;
 		$.each(criteria, function() {
 			//<input type='text' name='txt'>
 			var divCriteria = document.createElement('div');
@@ -431,21 +430,19 @@ function main() {
 			$("#procid-overlay-div").append(divCriteria);
 
 			tempCriteria.push(this);
-			
+
 			var lowerLabel = document.createElement('label');
 			lowerLabel.setAttribute('id', 'procid-criteria-lower-label');
 			lowerLabel.innerHTML = "Lower";
 			divCriteria.appendChild(lowerLabel);
 
 			var lower = document.createElement('input');
-			lower.setAttribute('id', 'procid-criteria-lower'+this.id);
+			lower.setAttribute('id', 'procid-criteria-lower' + this.id);
 			lower.setAttribute('type', 'text');
 			lower.setAttribute('name', 'lower');
 			lower.value = this.lower;
-			$("#procid-criteria-lower"+this.id).bind("keyup change", function() {
-				console.log("i: " +  i);
-				tempCriteria[i].lower = this.value;
-				
+			$("#procid-criteria-lower" + this.id).bind("keyup change", function() {
+				//tempCriteria[i].lower = this.value; i is the last i
 			});
 			divCriteria.appendChild(lower);
 
@@ -455,12 +452,12 @@ function main() {
 			divCriteria.appendChild(upperLabel);
 
 			var upper = document.createElement('input');
-			upper.setAttribute('id', 'procid-criteria-upper'+this.id);
+			upper.setAttribute('id', 'procid-criteria-upper' + this.id);
 			upper.setAttribute('type', 'text');
 			upper.setAttribute('name', 'higher');
 			upper.value = this.upper;
-			$("#procid-criteria-upper"+this.id).bind("keyup change", function() {
-				tempCriteria[i].upper = this.value;
+			$("#procid-criteria-upper" + this.id).bind("keyup change", function() {
+				//tempCriteria[i].upper = this.value;
 			});
 			divCriteria.appendChild(upper);
 
@@ -468,18 +465,17 @@ function main() {
 			descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
 			descriptionLabel.innerHTML = "Description";
 			divCriteria.appendChild(descriptionLabel);
-			
+
 			var description = document.createElement('input');
-			description.setAttribute('id', 'procid-criteria-description'+this.id);
+			description.setAttribute('id', 'procid-criteria-description' + this.id);
 			description.setAttribute('type', 'text');
 			description.setAttribute('name', 'description');
 			description.value = this.description;
-			$("#procid-criteria-description"+this.id).bind("keyup change", function() {
-				tempCriteria[i].description = this.value;
+			$("#procid-criteria-description" + this.id).bind("keyup change", function() {
+				//tempCriteria[i].description = this.value;
 			});
 			divCriteria.appendChild(description);
-			
-			i++;
+
 		});
 
 		var saveButton = document.createElement('input');
@@ -489,16 +485,17 @@ function main() {
 		saveButton.onclick = function(e) {
 			var i = 0;
 			$.each(tempCriteria, function() {
-				console.log("befor critr: " + criteria[i].lower);
-				console.log("id: " + this.id);
-				criteria[i].lower = $("#procid-criteria-lower"+this.id).val();
-				console.log("critr: " + criteria[i].lower);
-				//console.log("critr: blah blah blah" + this.upper);
+				criteria[i].lower = $("#procid-criteria-lower" + this.id).val();
+				$(".procid-svg-criteria-lower" + this.id).map(function() {
+					this.text(criteria[i].lower);
+					
+				});
+				
+				console.log("this.te" + $(".procid-svg-criteria-lower1")[0].text());
+				//$(".procid-svg-criteria-lower1")[1].text("Salam,");
 				i++;
-				
-				
 			});
-			
+
 			document.body.removeChild(document.getElementById("procid-overlay"));
 			document.body.removeChild(document.getElementById("procid-overlay-div"));
 		};
@@ -700,6 +697,7 @@ function main() {
 			//<text x="0" y="15" fill="red">I love SVG</text>
 			var lowerLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
 			lowerLabel.setAttribute("x", 0);
+			lowerLabel.setAttribute("class", "procid-svg-criteria-lower" + this.id);
 			lowerLabel.setAttribute("y", 30);
 			lowerLabel.setAttribute("fill", "black");
 			lowerLabel.setAttribute("title", this.description);
