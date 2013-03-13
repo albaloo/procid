@@ -12,6 +12,10 @@ class SendjsonController < ApplicationController
   			:type => "application/json")
 	end
 
+	def receive
+		#render :json => @data, :callback =>params[:callback]
+	end
+
 	# For all responses in this controller, return the CORS access control headers.
 	def cors_set_access_control_headers
 	  headers['Access-Control-Allow-Origin'] = '*'

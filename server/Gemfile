@@ -1,16 +1,38 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.12'
+RAILS_VERSION = '~> 3.2.12'
+DM_VERSION    = '~> 1.2.0'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem 'activesupport',      RAILS_VERSION, :require => 'active_support'
+gem 'actionpack',         RAILS_VERSION, :require => 'action_pack'
+gem 'actionmailer',       RAILS_VERSION, :require => 'action_mailer'
+gem 'activeresource',     RAILS_VERSION, :require => 'active_resource'
+gem 'railties',           RAILS_VERSION, :require => 'rails'
+gem 'tzinfo'
 
-#gem "mysql", "~> 2.9.1"
+gem 'dm-rails', '1.2.1', :git => 'https://github.com/datamapper/dm-rails.git', :branch => 'release-1.2'
+gem 'dm-active_model', '1.2.1', :git => 'https://github.com/datamapper/dm-active_model.git', :branch => 'release-1.2'
+gem 'dm-mysql-adapter',     DM_VERSION
 
-gem 'sqlite3'
+gem 'dm-migrations',        DM_VERSION
+gem 'dm-types',             DM_VERSION
+gem 'dm-validations',       DM_VERSION
+gem 'dm-constraints',       DM_VERSION
+gem 'dm-transactions',      DM_VERSION
+gem 'dm-aggregates',        DM_VERSION
+gem 'dm-timestamps',        DM_VERSION
+gem 'dm-observer',          DM_VERSION
+gem 'dm-serializer',        DM_VERSION
+
+#gem 'rails', '3.2.12'
+#gem 'data_mapper'
+
+#gem 'mysql2'
 #gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
 
+
+gem 'libv8', '~> 3.11.8.3'
 
 # Gems used only for assets and not required
 # in production environments by default.

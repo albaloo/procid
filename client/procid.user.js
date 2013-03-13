@@ -30,9 +30,8 @@ function addJQuery(callback) {
 function main() {
 
 	console.log("begin");
-	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master';
-	var CSSSERVERPATH = '.';
-	//'http://web.engr.illinois.edu/~rzilouc2/procid';
+	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master/client';
+	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
 	var commentInfos = [];
 	var criteria = [];
 
@@ -367,7 +366,24 @@ function main() {
 			'async' : false
 		});
 
-		$.getJSON("input.json", function(data) {
+		var parameter = JSON.stringify(commentInfos);
+
+		var ajax_url = JSON.stringify(commentInfos);
+	        //var ajax_data = <someParams>;
+        	//var auth_token = <authTokenFromRails>;
+
+        	$.ajax({
+        	  type: 'POST',
+        	  dataType: "json",
+        	  crossDomain: true,
+        	  url: "http://localhost:3000/receive",// + ajax_url,
+        	  cache: false,
+        	  data: ajax_url,
+        	});
+
+
+    		url = "http://localhost:3000/input"; // + '?' + $.param(commentInfos);
+		$.getJSON(url, function(data) {
 			$.each(data.issueComments, function(i, comment) {
 				commentInfos[i].tags = comment.tags;
 				applyTags(commentInfos[i]);
