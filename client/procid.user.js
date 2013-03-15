@@ -382,6 +382,8 @@ function main() {
         	});
 
 
+		$.post("http://0.0.0.0:3000/postcomments",{"commentInfos" : JSON.stringify(commentInfos)});
+
     		url = "http://localhost:3000/input"; // + '?' + $.param(commentInfos);
 		$.getJSON(url, function(data) {
 			$.each(data.issueComments, function(i, comment) {

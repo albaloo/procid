@@ -1,6 +1,7 @@
 Backend::Application.routes.draw do
 	
-	match "/input" => "sendjson#input"
+	match "/input" => "homepage#input"
+	match "/postcomments" => "homepage#postcomments"
 	match "/receive" => "sendjson#receive"
 
 
