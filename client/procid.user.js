@@ -601,9 +601,9 @@ function main() {
 		wrapperDropdown.setAttribute('class', 'wrapper-dropdown');
 		wrapperDropdown.setAttribute('tabindex', '1');
 		wrapperDropdown.onclick = function(event) {
-					$(this).toggleClass('active');
-					return false;
-				};
+			$(this).toggleClass('active');
+			return false;
+		};
 		divStatus.appendChild(wrapperDropdown);
 
 		var wrapperDropdownText = document.createElement('span');
@@ -626,10 +626,10 @@ function main() {
 			var wrapperDropdownListOption = document.createElement('li');
 			wrapperDropdownList.appendChild(wrapperDropdownListOption);
 			wrapperDropdownListOption.onclick = function() {
-					var opt = $(this);
-					obj.val = opt.text();
-					obj.index = opt.index();
-					wrapperDropdownText.innerHTML = obj.val;
+				var opt = $(this);
+				obj.val = opt.text();
+				obj.index = opt.index();
+				wrapperDropdownText.innerHTML = obj.val;
 			};
 
 			var wrapperDropdownListOptionLink = document.createElement('a');
@@ -643,7 +643,6 @@ function main() {
 
 		});
 	}
-	
 	var createIdeaComments = function(divIdeaBlock, commentInfo) {
 		//comments on an idea
 		var divComments = document.createElement('div');
@@ -748,12 +747,11 @@ function main() {
 			//<svg height=50 width=90 viewBox='0 0 90 50' style='display: block'>
 			var mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 			mySvg.setAttribute("id", "mysvg");
-			mySvg.setAttribute("height", '40');
-			mySvg.setAttribute("width", '210');
-			mySvg.setAttribute("viewBox", "0 0 210 40");
+			mySvg.setAttribute("height", '50');
+			mySvg.setAttribute("width", '260');
+			mySvg.setAttribute("viewBox", "0 0 260 50");
 			mySvg.setAttribute("preserveAspectRatio", "xMinYMin");
 			divCriterion.appendChild(mySvg);
-
 
 			//<rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)"/>
 			// <image x="20" y="20" width="300" height="80" xlink:href="http://jenkov.com/images/layout/top-bar-logo.png" />
@@ -762,15 +760,85 @@ function main() {
 			var color = "lightgray";
 			//"#0D7DC1";
 			var slider = document.createElementNS("http://www.w3.org/2000/svg", "image");
-			slider.setAttribute("x", 0);
+			slider.setAttribute("x", 5);
 			//slider.setAttribute("class", "procid-svg-criteria-lower" + this.id);
-			slider.setAttribute("y", 30);
-			slider.setAttribute("width", "300");
-			slider.setAttribute("height", "80");
-			slider.setAttribute("xlink:href", ABSOLUTEPATH+"/slider.png");
+			slider.setAttribute("y", 15);
+			slider.setAttribute("width", "240");
+			slider.setAttribute("height", "30");
+			slider.setAttributeNS('http://www.w3.org/1999/xlink', 'href', ABSOLUTEPATH + "/images/slider.png");
 			mySvg.appendChild(slider);
 
-			var x1 = 0;
+			var lowerLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			lowerLabel.setAttribute("x", 260 / 2 - 20);
+			lowerLabel.setAttribute("class", "procid-svg-criteria-lower" + this.id);
+			lowerLabel.setAttribute("y", 20);
+			lowerLabel.setAttribute("fill", "black");
+			lowerLabel.setAttribute("title", this.description);
+			lowerLabel.textContent = this.lower;
+			mySvg.appendChild(lowerLabel);
+
+			var lowerLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+			lowerLabelTitle.textContent = this.description;
+			lowerLabel.appendChild(lowerLabelTitle);
+
+			var id = this.id;
+			var thisValue = "2";
+			
+			var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+			shape.setAttribute("style", "cursor: pointer");
+			shape.setAttribute("id", "circle" + commentInfo.title.substr(1) + id + thisValue);
+			shape.setAttribute("cx", 42);
+			shape.setAttribute("cy", 30);
+			shape.setAttribute("r", 8);
+			shape.setAttribute("stroke", color);
+			shape.setAttribute("stroke-width", '3');
+			shape.setAttribute("fill", "white");
+			shape.onmouseover = function(e) {
+
+			}
+			shape.onclick = function(e) {
+				var prevValue = findCriterion(commentInfo, id);
+				if (prevValue == -1) {
+					shape.setAttribute("fill", "#0D7DC1");
+					shape.setAttribute("stroke", "#0D7DC1");
+					addCriterionValue(commentInfo, thisValue, "I think this works", id);
+					var value = 0;
+					while (value < thisValue) {
+						$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
+						$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+						$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+						value++;
+					}
+				} else {
+					if (prevValue.value > thisValue) {
+						var value = prevValue.value;
+						while (value > thisValue) {
+							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", color);
+							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+							value--;
+						}
+						$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+					} else {
+						var value = prevValue.value;
+						while (value < thisValue) {
+							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
+							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+							value++;
+						}
+					}
+					commentInfo.criteria = $.grep(commentInfo.criteria, function(e) {
+						return e.id != id;
+					});
+					shape.setAttribute("fill", "#0D7DC1");
+					shape.setAttribute("stroke", "#0D7DC1");
+					addCriterionValue(commentInfo, thisValue, "I think this works", id);
+				}
+			};
+			mySvg.appendChild(shape);
+
+			/*var x1 = 0;
 			var distance = 10;
 			var color = "lightgray";
 			//"#0D7DC1";
@@ -790,70 +858,70 @@ function main() {
 			var id = this.id;
 			var criteriaValueArray = [0, 1, 2, 3, 4];
 			$.each(criteriaValueArray, function() {
-				var thisValue = "" + this;
-				if (this != 4) {
-					var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-					line.setAttribute("id", "line" + commentInfo.title.substr(1) + id + thisValue);
-					line.setAttribute("x1", 20 + this * 30);
-					line.setAttribute("y1", 10);
-					line.setAttribute("x2", 20 + (this + 1) * 30);
-					line.setAttribute("y2", 10);
-					line.setAttribute("stroke", color);
-					mySvg.appendChild(line);
-				}
+			var thisValue = "" + this;
+			if (this != 4) {
+			var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			line.setAttribute("id", "line" + commentInfo.title.substr(1) + id + thisValue);
+			line.setAttribute("x1", 20 + this * 30);
+			line.setAttribute("y1", 10);
+			line.setAttribute("x2", 20 + (this + 1) * 30);
+			line.setAttribute("y2", 10);
+			line.setAttribute("stroke", color);
+			mySvg.appendChild(line);
+			}
 
-				var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-				shape.setAttribute("style", "cursor: pointer");
-				shape.setAttribute("id", "circle" + commentInfo.title.substr(1) + id + thisValue);
-				shape.setAttribute("cx", 20 + this * 30);
-				shape.setAttribute("cy", 10);
-				shape.setAttribute("r", 5);
-				shape.setAttribute("stroke", color);
-				shape.setAttribute("fill", color);
-				shape.onmouseover = function(e) {
+			var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+			shape.setAttribute("style", "cursor: pointer");
+			shape.setAttribute("id", "circle" + commentInfo.title.substr(1) + id + thisValue);
+			shape.setAttribute("cx", 20 + this * 30);
+			shape.setAttribute("cy", 10);
+			shape.setAttribute("r", 5);
+			shape.setAttribute("stroke", color);
+			shape.setAttribute("fill", color);
+			shape.onmouseover = function(e) {
 
-				}
-				shape.onclick = function(e) {
-					var prevValue = findCriterion(commentInfo, id);
-					if (prevValue == -1) {
-						shape.setAttribute("fill", "#0D7DC1");
-						shape.setAttribute("stroke", "#0D7DC1");
-						addCriterionValue(commentInfo, thisValue, "I think this works", id);
-						var value = 0;
-						while (value < thisValue) {
-							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
-							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-							value++;
-						}
-					} else {
-						if (prevValue.value > thisValue) {
-							var value = prevValue.value;
-							while (value > thisValue) {
-								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", color);
-								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-								$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-								value--;
-							}
-							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-						} else {
-							var value = prevValue.value;
-							while (value < thisValue) {
-								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
-								$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-								$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-								value++;
-							}
-						}
-						commentInfo.criteria = $.grep(commentInfo.criteria, function(e) {
-							return e.id != id;
-						});
-						shape.setAttribute("fill", "#0D7DC1");
-						shape.setAttribute("stroke", "#0D7DC1");
-						addCriterionValue(commentInfo, thisValue, "I think this works", id);
-					}
-				};
-				mySvg.appendChild(shape);
+			}
+			shape.onclick = function(e) {
+			var prevValue = findCriterion(commentInfo, id);
+			if (prevValue == -1) {
+			shape.setAttribute("fill", "#0D7DC1");
+			shape.setAttribute("stroke", "#0D7DC1");
+			addCriterionValue(commentInfo, thisValue, "I think this works", id);
+			var value = 0;
+			while (value < thisValue) {
+			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
+			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+			value++;
+			}
+			} else {
+			if (prevValue.value > thisValue) {
+			var value = prevValue.value;
+			while (value > thisValue) {
+			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", color);
+			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+			value--;
+			}
+			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
+			} else {
+			var value = prevValue.value;
+			while (value < thisValue) {
+			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
+			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
+			value++;
+			}
+			}
+			commentInfo.criteria = $.grep(commentInfo.criteria, function(e) {
+			return e.id != id;
+			});
+			shape.setAttribute("fill", "#0D7DC1");
+			shape.setAttribute("stroke", "#0D7DC1");
+			addCriterionValue(commentInfo, thisValue, "I think this works", id);
+			}
+			};
+			mySvg.appendChild(shape);
 			});
 
 			//<text x="0" y="15" fill="red">I love SVG</text>
@@ -866,7 +934,7 @@ function main() {
 
 			var upperLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
 			upperLabelTitle.textContent = this.description;
-			upperLabel.appendChild(upperLabelTitle);
+			upperLabel.appendChild(upperLabelTitle);*/
 
 			//TODO: put an svg image with ? after selection, click on it and you'll be redirected to the new comment page
 			//<image x="200" y="200" width="100px" height="100px" xlink:href="myimage.png">
@@ -879,19 +947,19 @@ function main() {
 			 reason.textContent = "Explain why...";
 			 mySvg.appendChild(reason);*/
 
-			var comment_value = findCriterion(commentInfo, id);
-			if (comment_value != -1) {
-				var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-				polygon.setAttribute("id", "procid-polygon1");
-				polygon.setAttribute("points", "37,130 42,140 47,130");
-				polygon.setAttribute("stroke", "black");
-				polygon.setAttribute("stroke-width", "2");
-				polygon.setAttribute("fill", color);
-				mySvg.appendChild(polygon);
-				//<polygon fill="white" stroke="black" stroke-width="2" points="37,130 42,140 47,130" />
-				//<rect x="15" y="100" width="55" height="30" fill="white" stroke="black" stroke-width="1.5" rx="5" ry="5"/>
-				//<line x1="38" y1="130" x2="46" y2="130" stroke="white" stroke-width="3"/>
-			}
+			/*var comment_value = findCriterion(commentInfo, id);
+			 if (comment_value != -1) {
+			 var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+			 polygon.setAttribute("id", "procid-polygon1");
+			 polygon.setAttribute("points", "37,130 42,140 47,130");
+			 polygon.setAttribute("stroke", "black");
+			 polygon.setAttribute("stroke-width", "2");
+			 polygon.setAttribute("fill", color);
+			 mySvg.appendChild(polygon);
+			 //<polygon fill="white" stroke="black" stroke-width="2" points="37,130 42,140 47,130" />
+			 //<rect x="15" y="100" width="55" height="30" fill="white" stroke="black" stroke-width="1.5" rx="5" ry="5"/>
+			 //<line x1="38" y1="130" x2="46" y2="130" stroke="white" stroke-width="3"/>
+			 }*/
 		});
 	}
 	var createIdeaPageBody = function() {
