@@ -8,6 +8,6 @@ class Participant
   property :experience,   Integer,   :required => false
   
   has n, :comments
-  has n, :criterias
+  has n, :criterias, :required =>false
 
 end

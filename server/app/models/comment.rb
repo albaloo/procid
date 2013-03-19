@@ -3,11 +3,11 @@ class Comment
 
   # define our schema
   property :id,   Serial
-  property :title, String,  :required => true
-  property :link, String, :default => false, :required => true
-  property :content, String
+  property :title, String, :required => true
+  property :link, String,:length=>500, :required => true
+  property :content,String,:length=>60000
 
-  belongs_to :participant, :key => true
+  belongs_to :participant
 
   # comment may belong to an idea
   belongs_to :ideasource, 'Idea', :required => false
@@ -18,4 +18,7 @@ class Comment
   # comment may have n tags
   has n, :tag, :required => false
 
+  belongs_to :issue,:required=>false
+  belongs_to :idea,:required=>false
+  belongs_to :criteria_status, :required=>false
 end

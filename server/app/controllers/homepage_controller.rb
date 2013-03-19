@@ -5,9 +5,28 @@ class HomepageController < ApplicationController
 
 	def postcomments
 		render :nothing => true
-		tmp_file = "#{Rails.root}/out.txt"
-		File.open(tmp_file, 'wb') do |f|
-			f.write params[:commentInfos]
+		input =ActiveSupport::JSON.decode(params[:commentInfos])
+		processInput(input)
+	end
+	
+	def processInput(input)
+		input.each do |curr|
+			a = Participant.first_or_create({:user_name => curr["author"]},{
+				:user_name => curr["author"],
+				:link => curr["authorLink"]
+			})
+			comment = Comment.first_or_create({:title => curr["title"]},{
+				:title => curr["title"],
+				:link => curr["link"],
+				:content => curr["content"],
+				:participant => a
+			})
+			#comment.raise_on_save_failure = true
+			#comment.save
+			#tmp_file = "#{Rails.root}/out.txt"
+			#File.open(tmp_file, 'wb') do |f|
+			#	f.write a.id
+			#end
 		end
 	end
 
