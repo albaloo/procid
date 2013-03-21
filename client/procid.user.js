@@ -13,28 +13,48 @@
 
 // a function that loads jQuery and calls a callback function when jQuery has finished loading
 function addJQuery(callback) {
+	//Jquery Script
 	var script = document.createElement("script");
-	script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js");
+	//script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js");
+	script.setAttribute("src", "//headjs.com/media/libs/headjs/0.99/head.min.js");
 	script.addEventListener('load', function() {
 		var script = document.createElement("script");
+		//script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
 		script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
 		var body = document.getElementsByTagName('head')[0];
 		body.appendChild(script);
 	}, false);
+
+	//D3 script
+	/*var scriptd3 = document.createElement("script");
+	scriptd3.setAttribute("src", "//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js");
+	scriptd3.addEventListener('load', function() {
+		var scriptd3 = document.createElement("script");
+		var body = document.getElementsByTagName('head')[0];
+		body.appendChild(scriptd3);
+	}, false);*/
+
 	var body1 = document.getElementsByTagName('head')[0];
-	//<script type="text/javascript" src="http://dl.dropbox.com/u/40036711/Scripts/ddslick.js"></script>
 	body1.appendChild(script);
+	//body1.appendChild(scriptd3);
 };
+	
 
 // the main function of this userscript
 function main() {
 
+head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js", function() {
 	console.log("begin");
 	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master/client';
 	var CSSSERVERPATH = '.';
 	//'http://web.engr.illinois.edu/~rzilouc2/procid';
 	var commentInfos = [];
 	var criteria = [];
+	var allCriteria = [];
+
+	if (!window.d3) { 
+		loadScript("//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"); 
+		}
 
 	var addCSSToHeader = function() {
 		var header = document.getElementsByTagName('head')[0];
@@ -708,6 +728,7 @@ function main() {
 		criteria.push(criterion);
 		return criterion;
 	}
+	
 	var addCriterionValue = function(commentInfo, value_, comment_, id_) {
 		var criterion = {
 			value : value_,
@@ -715,7 +736,14 @@ function main() {
 			id : id_
 		};
 		commentInfo.criteria.push(criterion);
-		return commentInfo;
+		var criterion_track = {
+			value : value_,
+			comment : comment_,
+			id : id_,
+			title : commentInfo.title
+		};
+		allCriteria.push(criterion_track);
+		return criterion;
 	}
 	var findCriterion = function(commentInfo, id_) {
 		var result = $.grep(commentInfo.criteria, function(e) {
@@ -731,12 +759,73 @@ function main() {
 			//TODO: remove criterion
 			return commentInfo;
 	}
+	
+	var createCriterionSelectors = function(){
+		var color = "lightgray";
+
+		//y function works for both plots
+		var x = d3.scale.quantize().domain([0, 8]).range([40, 60, 80, 100, 120, 140, 160, 180, 200]);
+
+		var mySvg = d3.selectAll('#procid-idea-criterion').append("svg:svg").attr("width", '260').attr("height", '50').attr("class", "selector").attr("viewBox", "0 0 260 50");
+		
+		d3.selectAll(".selector").append("image")
+    		.attr("xlink:href", ABSOLUTEPATH + "/images/slider.png")
+    		.attr("width", "240")
+    		.attr("x", "5")
+    		.attr('y', "15")
+    		.attr("height", "30");	
+
+		d3.selectAll(".selector").data(allCriteria).append("svg:circle")
+			.attr("class", "selectorCircle")
+			.attr("fill", "white")
+			.attr("stroke", color)
+			.attr("stroke-width", '3')
+			.attr("style", "cursor: pointer")
+			.attr("cy", "30")
+			.attr("cx", function(d) {
+				return x(d.value);
+			}).attr("r", "8")
+			.on("mouseover", function() {
+				d3.select(this).style("fill-opacity", .7);
+			}).on("mouseout", function() {
+				d3.select(this).style("fill-opacity", 1);
+			}).call(d3.behavior.drag().on("dragstart", function(d) {
+				this.__origin__ = [x(d.value), 30];
+				//mySvg.select(".tooltiptext").remove();
+				//mySvg.append("svg:text").attr("class", "tooltiptext").text().attr("x", x(d.value)).attr("y", 30 + 10);
+			}).on("drag", function(d) {
+				var cx = Math.min(200, Math.max(40, this.__origin__[0] += d3.event.dx));
+				//var cy = Math.min(50, Math.max(0, this.__origin__[1] += d3.event.dy));
+				cx = Math.floor(cx/10)*10;
+				var firstNum = x.range()[0];
+				var diff = x.range()[1] - firstNum;
+				var value = Math.floor((cx-firstNum)/diff);
+				
+				//updating the value
+				d.value = value;//Math.floor(x.invert(cx));
+				//TODO: save to database		
+		
+				d3.select(this).attr("cx", cx).attr("fill", function(d) {
+					return "blue";
+				});
+
+				//Tooltip next to the moving dot
+				//mySvg.select(".tooltiptext").text(d.value.toFixed(0)).attr("x", x(d.value));
+
+			}).on("dragend", function() {
+				//mySvg.select(".tooltiptext").remove();
+				delete this.__origin__;
+			}));
+		
+	}
+	
 	var createIdeaCriteria = function(divIdeaBlock, commentInfo) {
 		//criteris
 		var divCriteria = document.createElement('div');
 		divCriteria.setAttribute('id', 'procid-idea-criteria');
 		divCriteria.setAttribute('class', 'procid-idea-block-inner-cell');
 		divIdeaBlock.appendChild(divCriteria);
+		var counter = 0;
 
 		$.each(criteria, function() {
 			var divCriterion = document.createElement('div');
@@ -744,222 +833,9 @@ function main() {
 			divCriterion.setAttribute('class', 'procid-criteria-block-cell');
 			divCriteria.appendChild(divCriterion);
 
-			//<svg height=50 width=90 viewBox='0 0 90 50' style='display: block'>
-			var mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-			mySvg.setAttribute("id", "mysvg");
-			mySvg.setAttribute("height", '50');
-			mySvg.setAttribute("width", '260');
-			mySvg.setAttribute("viewBox", "0 0 260 50");
-			mySvg.setAttribute("preserveAspectRatio", "xMinYMin");
-			divCriterion.appendChild(mySvg);
-
-			//<rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:1;stroke:rgb(0,0,0)"/>
-			// <image x="20" y="20" width="300" height="80" xlink:href="http://jenkov.com/images/layout/top-bar-logo.png" />
-
-			var distance = 10;
-			var color = "lightgray";
-			//"#0D7DC1";
-			var slider = document.createElementNS("http://www.w3.org/2000/svg", "image");
-			slider.setAttribute("x", 5);
-			//slider.setAttribute("class", "procid-svg-criteria-lower" + this.id);
-			slider.setAttribute("y", 15);
-			slider.setAttribute("width", "240");
-			slider.setAttribute("height", "30");
-			slider.setAttributeNS('http://www.w3.org/1999/xlink', 'href', ABSOLUTEPATH + "/images/slider.png");
-			mySvg.appendChild(slider);
-
-			var lowerLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			lowerLabel.setAttribute("x", 260 / 2 - 20);
-			lowerLabel.setAttribute("class", "procid-svg-criteria-lower" + this.id);
-			lowerLabel.setAttribute("y", 20);
-			lowerLabel.setAttribute("fill", "black");
-			lowerLabel.setAttribute("title", this.description);
-			lowerLabel.textContent = this.lower;
-			mySvg.appendChild(lowerLabel);
-
-			var lowerLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
-			lowerLabelTitle.textContent = this.description;
-			lowerLabel.appendChild(lowerLabelTitle);
-
-			var id = this.id;
-			var thisValue = "2";
-			
-			var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-			shape.setAttribute("style", "cursor: pointer");
-			shape.setAttribute("id", "circle" + commentInfo.title.substr(1) + id + thisValue);
-			shape.setAttribute("cx", 42);
-			shape.setAttribute("cy", 30);
-			shape.setAttribute("r", 8);
-			shape.setAttribute("stroke", color);
-			shape.setAttribute("stroke-width", '3');
-			shape.setAttribute("fill", "white");
-			shape.onmouseover = function(e) {
-
-			}
-			shape.onclick = function(e) {
-				var prevValue = findCriterion(commentInfo, id);
-				if (prevValue == -1) {
-					shape.setAttribute("fill", "#0D7DC1");
-					shape.setAttribute("stroke", "#0D7DC1");
-					addCriterionValue(commentInfo, thisValue, "I think this works", id);
-					var value = 0;
-					while (value < thisValue) {
-						$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
-						$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-						$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-						value++;
-					}
-				} else {
-					if (prevValue.value > thisValue) {
-						var value = prevValue.value;
-						while (value > thisValue) {
-							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", color);
-							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-							value--;
-						}
-						$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-					} else {
-						var value = prevValue.value;
-						while (value < thisValue) {
-							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
-							$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-							$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-							value++;
-						}
-					}
-					commentInfo.criteria = $.grep(commentInfo.criteria, function(e) {
-						return e.id != id;
-					});
-					shape.setAttribute("fill", "#0D7DC1");
-					shape.setAttribute("stroke", "#0D7DC1");
-					addCriterionValue(commentInfo, thisValue, "I think this works", id);
-				}
-			};
-			mySvg.appendChild(shape);
-
-			/*var x1 = 0;
-			var distance = 10;
-			var color = "lightgray";
-			//"#0D7DC1";
-			var lowerLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			lowerLabel.setAttribute("x", 0);
-			lowerLabel.setAttribute("class", "procid-svg-criteria-lower" + this.id);
-			lowerLabel.setAttribute("y", 30);
-			lowerLabel.setAttribute("fill", "black");
-			lowerLabel.setAttribute("title", this.description);
-			lowerLabel.textContent = this.lower;
-			mySvg.appendChild(lowerLabel);
-
-			var lowerLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
-			lowerLabelTitle.textContent = this.description;
-			lowerLabel.appendChild(lowerLabelTitle);
-
-			var id = this.id;
-			var criteriaValueArray = [0, 1, 2, 3, 4];
-			$.each(criteriaValueArray, function() {
-			var thisValue = "" + this;
-			if (this != 4) {
-			var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-			line.setAttribute("id", "line" + commentInfo.title.substr(1) + id + thisValue);
-			line.setAttribute("x1", 20 + this * 30);
-			line.setAttribute("y1", 10);
-			line.setAttribute("x2", 20 + (this + 1) * 30);
-			line.setAttribute("y2", 10);
-			line.setAttribute("stroke", color);
-			mySvg.appendChild(line);
-			}
-
-			var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-			shape.setAttribute("style", "cursor: pointer");
-			shape.setAttribute("id", "circle" + commentInfo.title.substr(1) + id + thisValue);
-			shape.setAttribute("cx", 20 + this * 30);
-			shape.setAttribute("cy", 10);
-			shape.setAttribute("r", 5);
-			shape.setAttribute("stroke", color);
-			shape.setAttribute("fill", color);
-			shape.onmouseover = function(e) {
-
-			}
-			shape.onclick = function(e) {
-			var prevValue = findCriterion(commentInfo, id);
-			if (prevValue == -1) {
-			shape.setAttribute("fill", "#0D7DC1");
-			shape.setAttribute("stroke", "#0D7DC1");
-			addCriterionValue(commentInfo, thisValue, "I think this works", id);
-			var value = 0;
-			while (value < thisValue) {
-			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
-			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-			value++;
-			}
-			} else {
-			if (prevValue.value > thisValue) {
-			var value = prevValue.value;
-			while (value > thisValue) {
-			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", color);
-			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-			value--;
-			}
-			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", color);
-			} else {
-			var value = prevValue.value;
-			while (value < thisValue) {
-			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("fill", "#0D7DC1");
-			$("#" + "circle" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-			$("#" + "line" + commentInfo.title.substr(1) + id + value).attr("stroke", "#0D7DC1");
-			value++;
-			}
-			}
-			commentInfo.criteria = $.grep(commentInfo.criteria, function(e) {
-			return e.id != id;
-			});
-			shape.setAttribute("fill", "#0D7DC1");
-			shape.setAttribute("stroke", "#0D7DC1");
-			addCriterionValue(commentInfo, thisValue, "I think this works", id);
-			}
-			};
-			mySvg.appendChild(shape);
-			});
-
-			//<text x="0" y="15" fill="red">I love SVG</text>
-			var upperLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			upperLabel.setAttribute("x", 10 + 3.5 * 30);
-			upperLabel.setAttribute("y", 30);
-			upperLabel.setAttribute("fill", "black");
-			upperLabel.textContent = this.upper;
-			mySvg.appendChild(upperLabel);
-
-			var upperLabelTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
-			upperLabelTitle.textContent = this.description;
-			upperLabel.appendChild(upperLabelTitle);*/
-
-			//TODO: put an svg image with ? after selection, click on it and you'll be redirected to the new comment page
-			//<image x="200" y="200" width="100px" height="100px" xlink:href="myimage.png">
-			/*var reason = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			 reason.setAttribute("x", 20 + 4 * 30 + 10);
-			 reason.setAttribute("y", 20);
-			 //reason.setAttribute("width", 40);
-			 //reason.setAttribute("height", 40);
-			 //reason.setAttribute("fill", "black");
-			 reason.textContent = "Explain why...";
-			 mySvg.appendChild(reason);*/
-
-			/*var comment_value = findCriterion(commentInfo, id);
-			 if (comment_value != -1) {
-			 var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-			 polygon.setAttribute("id", "procid-polygon1");
-			 polygon.setAttribute("points", "37,130 42,140 47,130");
-			 polygon.setAttribute("stroke", "black");
-			 polygon.setAttribute("stroke-width", "2");
-			 polygon.setAttribute("fill", color);
-			 mySvg.appendChild(polygon);
-			 //<polygon fill="white" stroke="black" stroke-width="2" points="37,130 42,140 47,130" />
-			 //<rect x="15" y="100" width="55" height="30" fill="white" stroke="black" stroke-width="1.5" rx="5" ry="5"/>
-			 //<line x1="38" y1="130" x2="46" y2="130" stroke="white" stroke-width="3"/>
-			 }*/
+			var criterion = findCriterion(commentInfo, this.id);
+			if(criterion == -1)
+				criterion = addCriterionValue(commentInfo, 0, "", this.id);
 		});
 	}
 	var createIdeaPageBody = function() {
@@ -993,8 +869,10 @@ function main() {
 				createIdeaComments(divIdeaBlock, commentInfos[i]);
 
 			}
-			$("#procid-idea-page-wrapper").append(divIdeaBlock);
+			$("#procid-idea-page-wrapper").append(divIdeaBlock);		
 		}
+		
+		createCriterionSelectors();
 
 	}
 	var findPeopletoInvite = function() {
@@ -1099,6 +977,7 @@ function main() {
 	createInvitePageBody();
 
 	console.log("done");
+	});
 };
 
 // load jQuery and execute the main function
