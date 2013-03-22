@@ -6,6 +6,7 @@ class Comment
   property :title, String, :required => true
   property :link, String,:length=>500, :required => true
   property :content,String,:length=>60000
+  property :tone,String
 
   belongs_to :participant
 
@@ -16,7 +17,7 @@ class Comment
   has 1, :idea, :required => false
 
   # comment may have n tags
-  has n, :tag, :required => false
+  has n, :tags, :required => false
 
   belongs_to :issue,:required=>false
   belongs_to :idea,:required=>false

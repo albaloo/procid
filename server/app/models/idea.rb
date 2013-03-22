@@ -6,7 +6,7 @@ class Idea
   belongs_to :comment, :required=>false
 
   # comment has n related comments if it's an idea
-  has n, :comments, :required=>false
+  has n, :comments, :required => false
 
   # comment has n criteria status if it's an idea
   has n, :criteria_statuses

@@ -46,7 +46,7 @@ function main() {
 head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js", function() {
 	console.log("begin");
 	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master/client';
-	var CSSSERVERPATH = '.';
+	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
 	//'http://web.engr.illinois.edu/~rzilouc2/procid';
 	var commentInfos = [];
 	var criteria = [];
@@ -327,8 +327,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			var comment = {
 				title : array_title[i],
 				link : array_links[i],
-				author : array_author[i + 1],
-				authorLink : array_author_hrefs[i + 1],
+				author : array_author[i],
+				authorLink : array_author_hrefs[i],
 				content : array_contents[i],
 				tags : [],
 				status : "Ongoing",
@@ -427,7 +427,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		url = "http://localhost:3000/input";
 		// + '?' + $.param(commentInfos);
-		url = "./input.json"
+		//url = "./input.json"
 		$.getJSON(url, function(data) {
 			$.each(data.issueComments, function(i, comment) {
 				commentInfos[i].tags = comment.tags;

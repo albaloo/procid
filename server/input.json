@@ -10,6 +10,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -25,6 +26,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -39,6 +41,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -51,6 +54,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -65,6 +69,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -77,8 +82,9 @@
 				"idea"
 			],
 			"status": "Ongoing",
-			"comments": [],
+			"comments": ["7","8","9"],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -93,6 +99,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -105,6 +112,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "negative",
 			"criteria": []
 		},
 		{
@@ -115,8 +123,9 @@
 			"content": "tested, its better than before but the colors are a little strong still",
 			"tags": [],
 			"status": "Ongoing",
-			"comments": [],
+			"comments": ["12", "13"],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -127,8 +136,9 @@
 			"content": "I'mna re-roll the patch with the following changes:* Against latest drupal 7\n* Fixes for RTL languages (which at this stage I am assuming will be CSS changes to float stuff the other way)\n* Reduce strength of colours\n* Hook words into the translation systemThe colours are always going to be subjective - I'll throw a drupal up somewhere that people can see it in action and solicit some feedback then.",
 			"tags": [],
 			"status": "Ongoing",
-			"comments": [],
+			"comments": ["20"],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -141,8 +151,9 @@
 				"idea"
 			],
 			"status": "Ongoing",
-			"comments": [],
+			"comments": ["25", "27"],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -157,6 +168,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "neutral",
 			"criteria": []
 		},
 		{
@@ -169,6 +181,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "neutral",
 			"criteria": []
 		},
 		{
@@ -181,6 +194,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -195,6 +209,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -209,6 +224,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -223,6 +239,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -235,6 +252,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -249,6 +267,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -261,6 +280,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "negative",
 			"criteria": []
 		},
 		{
@@ -273,6 +293,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -285,6 +306,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -300,6 +322,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -312,6 +335,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -326,6 +350,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -340,6 +365,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -354,6 +380,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -366,6 +393,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -378,6 +406,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -390,6 +419,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -404,6 +434,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -416,6 +447,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -430,6 +462,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -442,6 +475,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -454,6 +488,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -468,6 +503,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -482,6 +518,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -494,6 +531,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -509,6 +547,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -523,6 +562,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -535,6 +575,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -549,6 +590,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -563,6 +605,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -575,6 +618,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -587,6 +631,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -599,6 +644,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -611,6 +657,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -625,6 +672,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -637,6 +685,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -649,6 +698,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -663,6 +713,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -675,6 +726,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -690,6 +742,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -702,6 +755,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -716,6 +770,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -728,6 +783,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -742,6 +798,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -754,6 +811,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -766,6 +824,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -780,6 +839,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -794,6 +854,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -806,6 +867,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -820,6 +882,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -834,6 +897,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -846,6 +910,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -858,6 +923,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -870,6 +936,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -882,6 +949,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -896,6 +964,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -908,6 +977,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -920,6 +990,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -932,6 +1003,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -946,6 +1018,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -960,6 +1033,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -972,6 +1046,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -987,6 +1062,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -999,6 +1075,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1013,6 +1090,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1027,6 +1105,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1041,6 +1120,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1055,6 +1135,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1067,6 +1148,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1081,6 +1163,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1093,6 +1176,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1107,6 +1191,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1121,6 +1206,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1133,6 +1219,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1145,6 +1232,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1157,6 +1245,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1169,6 +1258,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1181,6 +1271,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1193,6 +1284,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1205,6 +1297,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1217,6 +1310,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1229,6 +1323,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1241,6 +1336,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1255,6 +1351,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1267,6 +1364,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1279,6 +1377,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1291,6 +1390,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1305,6 +1405,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1319,6 +1420,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1331,6 +1433,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1343,6 +1446,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1355,6 +1459,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1367,6 +1472,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		},
 		{
@@ -1379,6 +1485,7 @@
 			"status": "Ongoing",
 			"comments": [],
 			"idea": "#1",
+			"tone": "positive",
 			"criteria": []
 		}
     ]
