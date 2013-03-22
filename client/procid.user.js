@@ -304,6 +304,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				comments : [],
 				idea : "#1",
 				criteria : [],
+				tone: "",
 				image : array_images[i]
 			};
 			commentInfos.push(comment);
@@ -381,25 +382,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		initializeCommentInfo();
 
-		//TODO: send to server
-
 		$.ajaxSetup({
 			'async' : false
-		});
-
-		var parameter = JSON.stringify(commentInfos);
-
-		var ajax_url = JSON.stringify(commentInfos);
-		//var ajax_data = <someParams>;
-		//var auth_token = <authTokenFromRails>;
-
-		$.ajax({
-			type : 'POST',
-			dataType : "json",
-			crossDomain : true,
-			url : "http://localhost:3000/receive", // + ajax_url,
-			cache : false,
-			data : ajax_url,
 		});
 
 		$.post("http://0.0.0.0:3000/postcomments", {
@@ -412,24 +396,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$.getJSON(url, function(data) {
 			$.each(data.issueComments, function(i, comment) {
 				commentInfos[i].tags = comment.tags;
+				commentInfos[i].tone = comment.tone;
+				commentInfos[i].comments = comment.comments;
 				applyTags(commentInfos[i]);
-				//var url = "http://" + comment.name + ".com";
-
 			});
 		});
-
-		//Random Data
-		/*$.each(commentInfos, function() {
-		 findTags(this);
-		 applyTags(this);
-		 });
-
-		 //Get the Json Data
-		 var dat = JSON.stringify(commentInfos);
-		 var temp = document.createElement('h3');
-		 temp.setAttribute('id', 'procid-lenses-temp');
-		 temp.innerHTML = dat;
-		 $("#procid-left-panel-body").append(temp);*/
 
 	}
 	var createOverlay = function() {
@@ -663,6 +634,41 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		});
 	}
+	var addIcon = function(divParent, iconPath, divId, iconId) {		
+		var divIcon = document.createElement('div');
+		divIcon.setAttribute('id', divId);
+		divParent.appendChild(divIcon);
+		
+		addImage(divIcon, iconPath, iconId);
+	}
+	
+	var addImage = function(divParent, iconPath, iconId) {
+		var icon = document.createElement('img');
+		icon.setAttribute('id', iconId);
+		icon.setAttribute('src', iconPath);
+		divParent.appendChild(icon);
+	}
+	
+	var findComment = function(number){
+		
+		var result = $.grep(commentInfos, function(e) {
+			return e.title == number;
+		});
+		if (result.length == 0)
+			return -1;
+		else
+			return result[0];
+		//var num = "#" + number;
+		/*$.each(commentInfos, function() {
+			//console.log("title: " + this.title);
+			//console.log("num: " + number);
+			var title = this.title;
+			if(new String(title).valueOf() === new String(number).valueOf())
+				return this;
+		});
+		
+		return -1;*/
+	}
 	var createIdeaComments = function(divIdeaBlock, commentInfo) {
 		//comments on an idea
 		var divComments = document.createElement('div');
@@ -670,37 +676,50 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		divComments.setAttribute('class', 'procid-idea-block-outer-cell');
 		divIdeaBlock.appendChild(divComments);
 
-		var randomComments = Math.floor(Math.random() * 10);
-		if (randomComments == 1) {
-			var comment = document.createElement('img');
-			comment.setAttribute('id', 'procid-comment-image');
-			comment.setAttribute('src', ABSOLUTEPATH + '/images/sad-face.png');
-			divComments.appendChild(comment);
+		var divCommentHeader = document.createElement('div');
+		divCommentHeader.setAttribute('id', 'procid-idea-comment-header');
+		divComments.appendChild(divCommentHeader);
+		
+		addIcon(divCommentHeader, ABSOLUTEPATH + "/images/pros.png", 'procid-idea-comment-div-icon', "procid-idea-comment-icon");
+		addIcon(divCommentHeader, ABSOLUTEPATH + "/images/nuetral.png", 'procid-idea-comment-div-icon', "procid-idea-comment-icon");
+		addIcon(divCommentHeader, ABSOLUTEPATH + "/images/cons.png", 'procid-idea-comment-div-icon', "procid-idea-comment-icon");
 
-			var comment2 = document.createElement('img');
-			comment2.setAttribute('id', 'procid-comment-image');
-			comment2.setAttribute('src', ABSOLUTEPATH + '/images/happy-face.png');
-			divComments.appendChild(comment2);
+		var divCommentColumns = document.createElement('div');
+		divCommentColumns.setAttribute('id', 'procid-idea-comment-columns');
+		divComments.appendChild(divCommentColumns);
+		
+		var divProsColumn = document.createElement('div');
+		divProsColumn.setAttribute('id', 'procid-idea-comment-column');
+		divCommentColumns.appendChild(divProsColumn);
+		
+		addIcon(divCommentColumns, ABSOLUTEPATH + "/images/sidebar_divider.png", 'procid-idea-comment-div-divider', "procid-idea-comment-divider");
+		
+		var divNuetralColumn = document.createElement('div');
+		divNuetralColumn.setAttribute('id', 'procid-idea-comment-column');
+		divCommentColumns.appendChild(divNuetralColumn);
+		
+		addIcon(divCommentColumns, ABSOLUTEPATH + "/images/sidebar_divider.png", 'procid-idea-comment-div-divider', "procid-idea-comment-divider");
+		
+		var divConsColumn = document.createElement('div');
+		divConsColumn.setAttribute('id', 'procid-idea-comment-column');
+		divCommentColumns.appendChild(divConsColumn);
+		
+		var srcPath = ABSOLUTEPATH + "/images/comment.png";
+		//console.log("here: " + commentInfo.comments);
+		$.each(commentInfo.comments, function() {
+			var string = "#"+this;
+			var comment = findComment(string);
+			console.log("foundComment: " + comment + " this: " + this);
+			if(comment.tone == "positive"){
+				addImage(divProsColumn, srcPath, 'procid-idea-comment-img');
+			}else if(comment.tone == "nuetral"){
+				addImage(divNuetralColumn, srcPath, 'procid-idea-comment-img');
+			}else if(comment.tone == "negative"){
+				addImage(divConsColumn, srcPath, 'procid-idea-comment-img');
+			}
+		});
 
-		} else if (randomComments == 2) {
-			var comment = document.createElement('img');
-			comment.setAttribute('id', 'procid-comment-image');
-			comment.setAttribute('src', ABSOLUTEPATH + '/images/nuetral-face.png');
-			divComments.appendChild(comment);
-
-			var comment2 = document.createElement('img');
-			comment2.setAttribute('id', 'procid-comment-image');
-			comment2.setAttribute('src', ABSOLUTEPATH + '/images/nuetral-face.png');
-			divComments.appendChild(comment2);
-
-		} else if (randomComments == 3) {
-			var comment = document.createElement('img');
-			comment.setAttribute('id', 'procid-comment-image');
-			comment.setAttribute('src', ABSOLUTEPATH + '/images/sad-face.png');
-			divComments.appendChild(comment);
-		}
-
-		var addComment = document.createElement('a');
+		/*var addComment = document.createElement('a');
 		addComment.setAttribute('id', 'procid-addcomment-link');
 		addComment.setAttribute('href', "#");
 		addComment.setAttribute('rel', "tooltip");
@@ -716,8 +735,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		addCommentImg.setAttribute('src', ABSOLUTEPATH + '/images/blue-plus.png');
 		addComment.appendChild(addCommentImg);
 
-		addComment.innerHTML += "Comment";
+		addComment.innerHTML += "Comment";*/
 	}
+
 	var createCriterion = function(lower_, upper_, id_, description_) {
 		var criterion = {
 			id : id_,
