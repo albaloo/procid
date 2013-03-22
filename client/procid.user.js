@@ -51,6 +51,13 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	var commentInfos = [];
 	var criteria = [];
 	var allCriteria = [];
+	var issue = {
+				title : "",
+				link : "",
+				author : "",
+				authorLink : "",
+				status : ""
+			};
 
 	if (!window.d3) { 
 		loadScript("//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"); 
@@ -246,6 +253,30 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		}).appendTo("#procid-" + name + '-link');
 
 	}
+	var initializeIssueInfo = function(){
+		var issueAuthor = $("#content-inner div[class='submitted'] a").first().text();
+		var issueAuthorLink = $("#comments div[class='submitted'] a").first().attr('href');
+		
+		var issueStatus = $("#project-issue-summary-table tr:contains('Status:') td").last().text();
+		
+		var issueTitle = $("#page-subtitle").first().text();
+		
+		var path = window.location.pathname;
+		if(path.indexOf("node") >= 0)
+			var issueLink = window.location.href;
+		else{
+			var link = $("h3[class='comment-title'] a").first().attr('href');
+			var index = link.indexOf("#")
+			issueLink = link.substring(0, index);
+		}
+		
+		issue.title = issueTitle;
+		issue.link = issueLink;
+		issue.author = issueAuthor;
+		issue.authorLink = issueAuthorLink;
+		issue.status = issueStatus;
+  
+	}
 	var initializeCommentInfo = function() {
 		//CommentTitle: <h3 class="comment-title"><a href="/node/331893#comment-1098877" class="active">#1</a></h3>
 		var array_title = $("h3[class='comment-title']").map(function() {
@@ -255,10 +286,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			return $(this).attr('href');
 		});
 		//CommentAuthor: <div class="submitted">Posted by <a href="/user/24967" title="View user profile.">webchick</a> on <em>November 8, 2008 at 8:20pm</em></div>
-		var array_author = $("div[class='submitted'] a").map(function() {
+		var array_author = $("#comments div[class='submitted'] a").map(function() {
 			return $(this).text();
 		});
-		var array_author_hrefs = $("div[class='submitted'] a").map(function() {
+		var array_author_hrefs = $("#comments div[class='submitted'] a").map(function() {
 			return $(this).attr('href');
 		});
 		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
@@ -381,12 +412,16 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		createLense('patch', 'procid-lenses', 'View Patches');
 
 		initializeCommentInfo();
-
+		initializeIssueInfo();
+		
 		$.ajaxSetup({
 			'async' : false
 		});
 
+		
+
 		$.post("http://0.0.0.0:3000/postcomments", {
+			"issue" : JSON.stringify(issue),
 			"commentInfos" : JSON.stringify(commentInfos)
 		});
 
@@ -709,7 +744,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$.each(commentInfo.comments, function() {
 			var string = "#"+this;
 			var comment = findComment(string);
-			console.log("foundComment: " + comment + " this: " + this);
 			if(comment.tone == "positive"){
 				addImage(divProsColumn, srcPath, 'procid-idea-comment-img');
 			}else if(comment.tone == "nuetral"){
@@ -874,7 +908,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		hr2.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 		$("#procid-idea-page-wrapper").append(hr2);
 
-		console.log("info:" + commentInfos.length);
+		console.log("numComments:" + commentInfos.length);
 
 		//Body
 		for (var i = 0; i < commentInfos.length; i++) {
