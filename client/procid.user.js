@@ -292,6 +292,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		var array_author_hrefs = $("#comments div[class='submitted'] a").map(function() {
 			return $(this).attr('href');
 		});
+		var array_patches = [];
 		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
 			var contents = $(this).children("p");
 			var returnValue = "";
@@ -312,6 +313,12 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				}
 			});
 
+			var patches=$(this).find("tr[class^='pift-pass'],tr[class^='pift-fail']");
+			if(patches.length > 0)
+				array_patches.push(1);
+			else
+				array_patches.push(0);
+
 			var imgs = $(this).find("img");
 			$.each(imgs, function() {
 				var link = $(this).attr("src");
@@ -324,13 +331,16 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		var len = array_title.length;
 		for (var i = 0; i < len; i++) {
+			initTags = [];
+			if(array_patches[i]>0)
+				initTags.push("patch");
 			var comment = {
 				title : array_title[i],
 				link : array_links[i],
 				author : array_author[i],
 				authorLink : array_author_hrefs[i],
 				content : array_contents[i],
-				tags : [],
+				tags : initTags,
 				status : "Ongoing",
 				comments : [],
 				idea : "#1",
@@ -423,12 +433,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$.post("http://0.0.0.0:3000/postcomments", {
 			"issue" : JSON.stringify(issue),
 			"commentInfos" : JSON.stringify(commentInfos)
-		});
-
-		url = "http://localhost:3000/input";
-		// + '?' + $.param(commentInfos);
-		//url = "./input.json"
-		$.getJSON(url, function(data) {
+		}, function(data) {
 			$.each(data.issueComments, function(i, comment) {
 				commentInfos[i].tags = comment.tags;
 				commentInfos[i].tone = comment.tone;
@@ -436,6 +441,18 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				applyTags(commentInfos[i]);
 			});
 		});
+
+		url = "http://localhost:3000/input";
+		// + '?' + $.param(commentInfos);
+		//url = "./input.json"
+		/*$.getJSON(url, function(data) {
+			$.each(data.issueComments, function(i, comment) {
+				commentInfos[i].tags = comment.tags;
+				commentInfos[i].tone = comment.tone;
+				commentInfos[i].comments = comment.comments;
+				applyTags(commentInfos[i]);
+			});
+		});*/
 
 	}
 	var createOverlay = function() {

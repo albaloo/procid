@@ -17,7 +17,7 @@ class Comment
   has 1, :idea, :required => false
 
   # comment may have n tags
-  has n, :tags, :required => false
+  has n, :tags
 
   belongs_to :issue,:required=>false
   belongs_to :idea,:required=>false

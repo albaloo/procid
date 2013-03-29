@@ -9,6 +9,9 @@ class Issue
   has n, :comments, :required => false
   has n, :criterias, :required => false
 
+  def find_num_previous_comments
+    return Comment.count(:issue_id=>id);
+  end
   #select all participants who are not participating in this thread
   def find_all_potential_participants
     adapter = DataMapper.repository(:default).adapter
@@ -17,6 +20,7 @@ class Issue
     potentials = adapter.select(command)
     return potentials
   end
+
 
   #randomly selects 10 participants between 100 experienced members who are not participating in this thread
   def find_experienced_potential_participants
