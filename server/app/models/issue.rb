@@ -4,6 +4,7 @@ class Issue
   property :title,        String,:length=>1000
   property :status,	String
   property :link, 	String,:length=>500,   :required => true
+  property :created_at,	DateTime, :required => false
   
   belongs_to :participant
   has n, :comments, :required => false

@@ -56,7 +56,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				link : "",
 				author : "",
 				authorLink : "",
-				status : ""
+				status : "",
+				created_at: ""
 			};
 
 	if (!window.d3) { 
@@ -255,12 +256,14 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	}
 	var initializeIssueInfo = function(){
 		var issueAuthor = $("#content-inner div[class='submitted'] a").first().text();
-		var issueAuthorLink = $("#comments div[class='submitted'] a").first().attr('href');
-		
+		var issueAuthorLink = $("#content-inner div[class='submitted'] a").first().attr('href');
+		var issueCreationDate = $("#content-inner div[class='submitted'] em").first().text;		
+
 		var issueStatus = $("#project-issue-summary-table tr:contains('Status:') td").last().text();
 		
 		var issueTitle = $("#page-subtitle").first().text();
 		
+
 		var path = window.location.pathname;
 		if(path.indexOf("node") >= 0)
 			var issueLink = window.location.href;
@@ -275,6 +278,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		issue.author = issueAuthor;
 		issue.authorLink = issueAuthorLink;
 		issue.status = issueStatus;
+		issue.created_at = issueCreationDate;
   
 	}
 	var initializeCommentInfo = function() {

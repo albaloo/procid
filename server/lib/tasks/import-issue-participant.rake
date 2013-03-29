@@ -8,9 +8,13 @@ task :csv_network_import => :environment do
 	participant = Participant.first_or_create({:user_name =>username})			 
 	values.shift
 	values.each do |value|		
-		value = "/node/" + value
-		issue = Issue.first({:link => value})
-		Network.first_or_create({:participant => participant, :issue => issue})	 
+		innerValues = value.strip.split(",")
+		issueName = innerValues[0]
+		issueName[0]='';
+		issueLink = "/node/" + issueName
+		issue = Issue.first({:link => issueLink})
+		date = innerValues[1].chop
+		Network.first_or_create({:participant => participant, :issue => issue, :commented_at => date})	 
 	end
   end
 
