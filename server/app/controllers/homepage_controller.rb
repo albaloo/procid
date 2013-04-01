@@ -20,7 +20,7 @@ class HomepageController < ApplicationController
 	def processInputFile(commentInfos,issue)
 		
 		threadInitiator = Participant.first_or_create({:user_name =>issue["author"]},{:link=>issue["authorLink"]})
-		currentIssue = Issue.first_or_create({:title => issue["title"]},{:status =>issue["status"],:participant=>threadInitiator,:link => issue["link"]})
+		currentIssue = Issue.first_or_create({:title => issue["title"]},{:status =>issue["status"],:participant=>threadInitiator,:link => issue["link"], :created_at=>issue["created_at"]})
 		
 		#We only need to process the comments that haven't been processed yet.
 		numPrevComments = currentIssue.find_num_previous_comments
@@ -28,7 +28,7 @@ class HomepageController < ApplicationController
 		if(numPrevComments < commentInfos.length)	
 			index = numPrevComments;
 		end
-	
+		
 		commentInfos.from(index).each do |curr|	
 			currentParticipant = Participant.first_or_create({:user_name =>curr["author"]},{:link=>curr["authorLink"]})
 			currentComment = Comment.first_or_create(:link => curr["link"])
@@ -39,23 +39,24 @@ class HomepageController < ApplicationController
 						:participant => currentParticipant,
 						:issue=>currentIssue
 						}
+
+			#Since patch tag is determined in the client side it will be applied here
 			tags = curr["tags"]
 			tags.each do |t|
 				tag = Tag.first_or_create({:name => t, :comment => currentComment})		
+			end
+			
+			#A simple check for idea, needs update in feature, should move to issue or comment?
+			if !(curr["image"].eql?(" "))
+				idea = Idea.first_or_create({:comment=> currentComment},{:status=>"Ongoing"})	
+				currentComment.ideasource = idea
+				tag = Tag.first_or_create({:name => "idea", :comment => currentComment})		
 			end						
-			#idea = Idea.first_or_create(:status=>curr["status"])
-			#comment.ideasource = idea
-			#idea.relatedcomments << comment
-			
-			
-			#input["tags"].each do |t|
-			#	tag = Tag.first_or_create(:name => t)
-			#	comment.tags << tag
-			#end
-			
+						
 			currentComment.raise_on_save_failure = true
 			currentComment.save
 		end
+
 		return currentIssue.id	
 	end
 	

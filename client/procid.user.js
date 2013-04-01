@@ -296,7 +296,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		var array_author_hrefs = $("#comments div[class='submitted'] a").map(function() {
 			return $(this).attr('href');
 		});
-		var array_patches = [];
+
 		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
 			var contents = $(this).children("p");
 			var returnValue = "";
@@ -305,8 +305,15 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			});
 			return returnValue;
 		});
-		//<tr class=" even"><td><a href="http://drupal.org/files/issues/password-strength-meter.png">password-strength-meter.png</a></td><td>30.69 KB</td><td><em>Ignored:  Check issue status.</td><td><em>None</em></td><td><em>None</em></td> </tr>
-		//<img src="http://drupal.org/files/issues/ms-passport.png" alt="MS Password Strength Meter" />
+
+		var array_patches =  $("div[class='content'] div[class='clear-block']").map(function() {
+			var returnValue = 0;
+			var patches=$(this).find("tr[class^='pift-pass'],tr[class^='pift-fail']");
+			if(patches.length > 0)
+				returnValue = 1;
+			return returnValue;			
+		});
+
 		var array_images = $("div[class='content'] div[class='clear-block']").map(function() {
 			var returnValue = " ";
 			var contents = $(this).find("a");
@@ -316,12 +323,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 					returnValue = link;
 				}
 			});
-
-			var patches=$(this).find("tr[class^='pift-pass'],tr[class^='pift-fail']");
-			if(patches.length > 0)
-				array_patches.push(1);
-			else
-				array_patches.push(0);
 
 			var imgs = $(this).find("img");
 			$.each(imgs, function() {
@@ -445,18 +446,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				applyTags(commentInfos[i]);
 			});
 		});
-
-		url = "http://localhost:3000/input";
-		// + '?' + $.param(commentInfos);
-		//url = "./input.json"
-		/*$.getJSON(url, function(data) {
-			$.each(data.issueComments, function(i, comment) {
-				commentInfos[i].tags = comment.tags;
-				commentInfos[i].tone = comment.tone;
-				commentInfos[i].comments = comment.comments;
-				applyTags(commentInfos[i]);
-			});
-		});*/
 
 	}
 	var createOverlay = function() {
