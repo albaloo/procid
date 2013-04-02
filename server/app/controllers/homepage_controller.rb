@@ -77,7 +77,11 @@ class HomepageController < ApplicationController
 			curr_json["authorLink"]=comments[count].participant.link
 			curr_json["content"]=comments[count].content
 			curr_json["tags"]=comments[count].tags.map{|tag| tag.name}
-			curr_json["status"]="Ongoing"
+			if comments[count].ideasource.nil?
+				curr_json["status"]="Ongoing"
+			else
+				curr_json["status"]=comments[count].ideasource.status
+			end
 			curr_json["comments"]=Array.new
 			curr_json["idea"]="#1"
 			curr_json["tone"]="positive"

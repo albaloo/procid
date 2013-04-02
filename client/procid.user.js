@@ -434,7 +434,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		});
 
 		
-
 		$.post("http://0.0.0.0:3000/postcomments", {
 			"issue" : JSON.stringify(issue),
 			"commentInfos" : JSON.stringify(commentInfos)
@@ -443,6 +442,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				commentInfos[i].tags = comment.tags;
 				commentInfos[i].tone = comment.tone;
 				commentInfos[i].comments = comment.comments;
+				//commentInfos[i].criteria = comment.criteria;
+				commentInfos[i].status = comment.status;
 				applyTags(commentInfos[i]);
 			});
 		});
@@ -644,7 +645,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		var wrapperDropdownText = document.createElement('span');
 		wrapperDropdownText.setAttribute('id', 'procid-status-text' + commentInfo.title.substr(1));
-		wrapperDropdownText.innerHTML = "Ongoing"
+		wrapperDropdownText.innerHTML = commentInfo.status
 		wrapperDropdown.appendChild(wrapperDropdownText);
 
 		var wrapperDropdownList = document.createElement('ul');
@@ -652,7 +653,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		wrapperDropdown.appendChild(wrapperDropdownList);
 
 		var obj = {
-			placeholder : 'ongoing',
+			placeholder : commentInfo.status,
 			val : '',
 			index : -1
 		};
@@ -666,6 +667,12 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				obj.val = opt.text();
 				obj.index = opt.index();
 				wrapperDropdownText.innerHTML = obj.val;
+				$.post("http://0.0.0.0:3000/setIdeaStatus", {
+				"issueLink" : issue.link, "commentTitle" : commentInfo.title, "status" : opt.text()
+				}, function() {
+					console.log("success");
+				});
+ 
 			};
 
 			var wrapperDropdownListOptionLink = document.createElement('a');
@@ -949,11 +956,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			});
 		});
 
-		/*$.getJSON("invite.json", function(data) {
-			$.each(data.invitedAuthors, function(i, author) {
-				suggestedAuthors[i] = author;
-			});
-		});*/
 		return suggestedMembers;
 	}
 	var createInvitePageBody = function() {

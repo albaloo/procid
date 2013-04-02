@@ -4,6 +4,7 @@ Backend::Application.routes.draw do
 	match "/postcomments" => "homepage#postcomments"
 	match "/receive" => "sendjson#receive"
 	match "/findPotentialParticipants" => "invitepage#findPotentialParticipants"
+	match "/setIdeaStatus" => "ideapage#setIdeaStatus"
 
 
 

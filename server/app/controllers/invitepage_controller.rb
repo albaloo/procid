@@ -2,9 +2,9 @@ class InvitepageController < ApplicationController
 
 	def findPotentialParticipants
                 issueLink = params[:issueLink]
-                #if(issueLink.ends_with?('#'))
+                if(issueLink.ends_with?('#'))
                   issueLink.chop
-                #end
+                end
 		currentIssue = Issue.first(:link => issueLink)
 		prepareOutputFile(currentIssue)
 	end
