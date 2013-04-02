@@ -3,6 +3,7 @@ Backend::Application.routes.draw do
 	match "/input" => "homepage#input"
 	match "/postcomments" => "homepage#postcomments"
 	match "/receive" => "sendjson#receive"
+	match "/findPotentialParticipants" => "invitepage#findPotentialParticipants"
 
 
 

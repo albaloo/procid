@@ -266,7 +266,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		var path = window.location.pathname;
 		if(path.indexOf("node") >= 0)
-			var issueLink = window.location.href;
+			var issueLink = window.location.pathname;
 		else{
 			var link = $("h3[class='comment-title'] a").first().attr('href');
 			var index = link.indexOf("#")
@@ -940,13 +940,21 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 	}
 	var findPeopletoInvite = function() {
-		var suggestedAuthors = [];
-		$.getJSON("invite.json", function(data) {
+		var suggestedMembers = [];
+		$.post("http://0.0.0.0:3000/findPotentialParticipants", {
+			"issueLink" : issue.link
+		}, function(data) {
+			$.each(data.invitedMembers, function(i, member) {
+				suggestedMembers.push(member);
+			});
+		});
+
+		/*$.getJSON("invite.json", function(data) {
 			$.each(data.invitedAuthors, function(i, author) {
 				suggestedAuthors[i] = author;
 			});
-		});
-		return suggestedAuthors;
+		});*/
+		return suggestedMembers;
 	}
 	var createInvitePageBody = function() {
 		//Procid Invite Page Body
@@ -963,6 +971,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			divAuthorName.setAttribute('id', 'procid-author-name');
 			divAuthorName.setAttribute('class', 'procid-invite-block-cell');
 			divAuthorName.textContent = suggestedPeaple[i].author;
+			
 			divInviteBlock.appendChild(divAuthorName);
 
 			var divAuthorDescription = document.createElement('div');

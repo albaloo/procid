@@ -20,7 +20,7 @@ class HomepageController < ApplicationController
 	def processInputFile(commentInfos,issue)
 		
 		threadInitiator = Participant.first_or_create({:user_name =>issue["author"]},{:link=>issue["authorLink"]})
-		currentIssue = Issue.first_or_create({:title => issue["title"]},{:status =>issue["status"],:participant=>threadInitiator,:link => issue["link"], :created_at=>issue["created_at"]})
+		currentIssue = Issue.first_or_create({:link => issue["link"]},{:status =>issue["status"],:participant=>threadInitiator,:title => issue["title"], :created_at=>issue["created_at"]})
 		
 		#We only need to process the comments that haven't been processed yet.
 		numPrevComments = currentIssue.find_num_previous_comments

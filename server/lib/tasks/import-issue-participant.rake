@@ -17,5 +17,5 @@ task :csv_network_import => :environment do
 		Network.first_or_create({:participant => participant, :issue => issue, :commented_at => date})	 
 	end
   end
-
+	puts "Finished pre-populating the db with network information"
 end
