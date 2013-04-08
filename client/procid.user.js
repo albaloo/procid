@@ -446,6 +446,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				commentInfos[i].status = comment.status;
 				applyTags(commentInfos[i]);
 			});
+			criteria=data.criteria;
 		});
 
 	}
@@ -490,35 +491,20 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 			tempCriteria.push(this);
 
-			var lowerLabel = document.createElement('label');
-			lowerLabel.setAttribute('id', 'procid-criteria-lower-label');
-			lowerLabel.innerHTML = "Lower";
-			divCriteria.appendChild(lowerLabel);
+			var title = document.createElement('label');
+			title.setAttribute('id', 'procid-criteria-lower-label');
+			title.innerHTML = "Title";
+			divCriteria.appendChild(title);
 
-			var lower = document.createElement('input');
-			lower.setAttribute('id', 'procid-criteria-lower' + this.id);
-			lower.setAttribute('type', 'text');
-			lower.setAttribute('name', 'lower');
-			lower.value = this.lower;
+			var titleInput = document.createElement('input');
+			titleInput.setAttribute('id', 'procid-criteria-lower' + this.id);
+			titleInput.setAttribute('type', 'text');
+			titleInput.setAttribute('name', 'labelInput');
+			titleInput.value = this.title;
 			$("#procid-criteria-lower" + this.id).bind("keyup change", function() {
 				//tempCriteria[i].lower = this.value; i is the last i
 			});
-			divCriteria.appendChild(lower);
-
-			var upperLabel = document.createElement('label');
-			upperLabel.setAttribute('id', 'procid-criteria-upper-label');
-			upperLabel.innerHTML = "Upper";
-			divCriteria.appendChild(upperLabel);
-
-			var upper = document.createElement('input');
-			upper.setAttribute('id', 'procid-criteria-upper' + this.id);
-			upper.setAttribute('type', 'text');
-			upper.setAttribute('name', 'higher');
-			upper.value = this.upper;
-			$("#procid-criteria-upper" + this.id).bind("keyup change", function() {
-				//tempCriteria[i].upper = this.value;
-			});
-			divCriteria.appendChild(upper);
+			divCriteria.appendChild(titleInput);
 
 			var descriptionLabel = document.createElement('label');
 			descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
@@ -544,9 +530,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		saveButton.onclick = function(e) {
 			var i = 0;
 			$.each(tempCriteria, function() {
-				criteria[i].lower = $("#procid-criteria-lower" + this.id).val();
+				criteria[i].label = $("#procid-criteria-lower" + this.id).val();
 				$(".procid-svg-criteria-lower" + this.id).map(function() {
-					this.text(criteria[i].lower);
+					this.text(criteria[i].label);
 
 				});
 
@@ -710,16 +696,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			return -1;
 		else
 			return result[0];
-		//var num = "#" + number;
-		/*$.each(commentInfos, function() {
-			//console.log("title: " + this.title);
-			//console.log("num: " + number);
-			var title = this.title;
-			if(new String(title).valueOf() === new String(number).valueOf())
-				return this;
-		});
-		
-		return -1;*/
 	}
 	var createIdeaComments = function(divIdeaBlock, commentInfo) {
 		//comments on an idea
@@ -789,11 +765,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		addComment.innerHTML += "Comment";*/
 	}
 
-	var createCriterion = function(lower_, upper_, id_, description_) {
+	var createCriterion = function(title_, id_, description_) {
 		var criterion = {
 			id : id_,
-			lower : lower_,
-			upper : upper_,
+			title : title_,
 			description : description_
 		};
 		criteria.push(criterion);
@@ -1043,9 +1018,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
 	$("#procid-left-panel-header").append(hr);
 
-	createCriterion("Simple", "Complex", "1", "The text should be simple.");
+	/*createCriterion("Simple", "Complex", "1", "The text should be simple.");
 	createCriterion("Explains", "Doesn't Explain", "2", "The text should be explanatory.");
-	createCriterion("Less", "More", "3", "We need less information.");
+	createCriterion("Less", "More", "3", "We need less information.");*/
 
 	createHomePageBody();
 	createIdeaPageBody();
