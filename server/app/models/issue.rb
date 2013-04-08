@@ -21,7 +21,7 @@ class Issue
     potentials.concat(find_experienced_potential_participants)
     potentials.concat(find_patchsubmitter_potential_participants)
     potentials.concat(find_consensus_potential_participants)
-    potentials.concat(find_recentconsensus_potential_participants)
+    potentials.concat(find_recent_potential_participants)
 
     return potentials.sample(30)
   end
@@ -35,6 +35,58 @@ class Issue
     return potentials
   end
 
+  def gather_participant_info_description (currentParticipant, num, recency)
+    description = ""
+    #Experience
+    year = currentParticipant.experience/52
+    yearString="years"
+    week = currentParticipant.experience%52
+    weekString="weeks"
+    
+    if(year == 1)
+      yearString = "year"
+    end
+    if(week == 1)
+      weekString = "week"
+    end
+
+    if(year>0 and week>0)
+      description.concat("has #{year} #{yearString} and #{week} #{weekString} of experience")
+    elsif(year>0)
+      description.concat("has #{year} #{yearString} of experience")
+    elsif(week>0)
+      description.concat("has #{week} #{weekString} of experience")
+    end
+
+    #Patch
+    patchString = "patches"
+    if(currentParticipant.usabilityPatches==1)
+      patchString = "patch"
+    end
+    description.concat(", submitted #{currentParticipant.usabilityPatches} usability #{patchString}")
+
+    #Consensus Threads
+    threadString = "threads"
+    if(num==1)
+      threadString = "thread"
+    end
+    description.concat(", participated in #{num} #{threadString} that reached consensus")
+
+    #Recent Participation
+    date2 = Time.now
+    days = 0
+    if(recency != 0)
+      #date1 = DateTime.rfc3339(recency)
+      days = recency#(date2-date1).to_f
+      threadString = "days"
+      if(days==1)
+        threadString = "day"
+      end
+    end
+#2013-03-14T21:44:00-05:00
+    description.concat(", and participated in a thread #{days} #{threadString} ago.")
+
+  end
   #randomly selects 10 participants between 100 experienced members who are not participating in this thread
   def find_experienced_potential_participants
     adapter = DataMapper.repository(:default).adapter
@@ -48,25 +100,7 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      year = currentParticipant.experience/52
-      yearString="years"
-      week = currentParticipant.experience%52
-      weekString="weeks"
-      description = ""
-      if(year == 1)
-        yearString = "year"
-      end
-      if(week == 1)
-        weekString = "week"
-      end
-      if(year>0 and week>0)
-        description = "has #{year} #{yearString} and #{week} #{weekString} of experience."
-      elsif(year>0)
-        description = "has #{year} #{yearString} of experience."
-      elsif(week>0)
-        description = "has #{week} #{weekString} of experience."
-      end
-      currentPInfo["description"]= description
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, 0, 0)#Time.now)
       
       potentials.push currentPInfo
       indx = indx + 1
@@ -88,12 +122,8 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      patchString = "patches"
-      if(currentParticipant.usabilityPatches==1)
-        patchString = "patch"
-      end
-      currentPInfo["description"]="submitted #{currentParticipant.usabilityPatches} usability #{patchString}."
-      
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, 0, 0)#Time.now)
+
       potentials.push currentPInfo
       indx = indx + 1
       break if indx == 20
@@ -134,11 +164,7 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      threadString = "threads"
-      if(row[1]==1)
-        threadString = "thread"
-      end
-      currentPInfo["description"]="participated in #{row[1]} #{threadString} that reached consensus."
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], 0)#Time.now)
       
       potentials.push currentPInfo
       indx = indx + 1
@@ -165,7 +191,30 @@ class Issue
       if(row[1]==1)
         threadString = "thread"
       end
-      currentPInfo["description"]="recently participated in #{row[1]} #{threadString} that reached consensus."
+      currentPInfo["description"]="recently participated in #{row[1]} #{threadString} that reached consensus"
+      
+      potentials.push currentPInfo
+      indx = indx + 1
+      break if indx == 20
+    end			
+
+    return potentials#.sample(10)
+  end
+
+  #randomly selects 10 participants between 100 who have RECENTLY participated in threads
+  def find_recent_potential_participants
+    adapter = DataMapper.repository(:default).adapter
+    issueid = Issue.first(:link => link).id
+    res = adapter.select("SELECT t1.participant_id, t1.commented_at FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY t1.commented_at DESC;")
+    indx = 0
+    potentials = Array.new
+    res.each do |row|
+      currentParticipant = Participant.first(:id=>row[0]);
+
+      currentPInfo=Hash.new
+      currentPInfo["author"]=currentParticipant.user_name
+      currentPInfo["authorLink"]=currentParticipant.link
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, 0, row[1])
       
       potentials.push currentPInfo
       indx = indx + 1
