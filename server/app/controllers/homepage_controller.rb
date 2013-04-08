@@ -20,6 +20,7 @@ class HomepageController < ApplicationController
 	def processInputFile(commentInfos,issue)
 		
 		threadInitiator = Participant.first_or_create({:user_name =>issue["author"]},{:link=>issue["authorLink"]})
+		
 		currentIssue = Issue.first_or_create({:link => issue["link"]},{:status =>issue["status"],:participant=>threadInitiator,:title => issue["title"], :created_at=>issue["created_at"]})
 		
 		#We only need to process the comments that haven't been processed yet.
@@ -56,7 +57,14 @@ class HomepageController < ApplicationController
 			currentComment.raise_on_save_failure = true
 			currentComment.save
 		end
-
+		if(numPrevComments < commentInfos.length)
+			if(numPrevComments<5)
+				numPrevComments=0
+			else
+				numPrevComments-=10
+			end
+			currentIssue.find_conversations(numPrevComments,5,2)
+		end
 		return currentIssue.id	
 	end
 	

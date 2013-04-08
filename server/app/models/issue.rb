@@ -224,6 +224,114 @@ class Issue
     return potentials#.sample(10)
   end
 
+#find conversations in a new thread
+  def find_conversations(start,convoLen,maxContinuous)
+  	comments = Comment.all(:issue_id=>id)
+  	x=start
+  	while(x<comments.size-convoLen)
+	  	tagComments=Array.new			#array to store comments that will get tagged
+  		currAuthor=comments[x].participant	#currAuthor and secAuthor keep track of the 2 conversation participants
+  		secAuthor=currAuthor
+  		pos=x					#current position in comments array
+  		numLastAuth=0				#number of consecutive posts made by the currAuthor
+  		isConvo=true				#boolean to keep of whether or not it is a conversation
+  		firstIter=true				#boolean to keep track of first iteration of the while loop
+  		grace=false				#boolean that keeps track of whether a comment was skipped over eg: ABACBA where A and B are the conversation participants and C is skipped
+  		while (isConvo && (tagComments.length < convoLen))
+  			maxPosts=pos+maxContinuous
+  			while ((tagComments.length < convoLen) && (comments[pos].participant==currAuthor))
+  				tagComments.push(comments[pos])
+  				numLastAuth+=1
+  				pos+=1
+  			end
+  			if(pos>maxPosts || pos==maxPosts-maxContinuous || numLastAuth > maxContinuous)
+  				numLastAuth=0
+  				isConvo=false
+  			end
+  			if(firstIter)
+  				countPosts=0
+  				countAuth=1
+  				iter=pos
+  				currPostAuth=comments[pos].participant
+  				while(iter<x+convoLen)
+  					if(currPostAuth==comments[iter].participant)
+  						countPosts+=1
+  					else
+  						countAuth+=1
+  					end
+  					iter+=1
+  				end
+  				if(countPosts==1)
+  					grace=true
+  					pos+=1
+  				else 
+  					numLastAuth=0
+  				end
+  				currAuthor=comments[pos].participant
+  				firstIter=false
+  				if(currAuthor.user_name == "System Message" || secAuthor.user_name == "System Message")
+  					isConvo=false
+  				end
+  			else
+  				if(!grace && (comments[pos].participant!=currAuthor && comments[pos].participant!=secAuthor))
+  					grace=true
+  					pos+=1
+  					if(pos >= comments.size-convoLen)
+  						break
+  					elsif(comments[pos].participant!=comments[pos-2].participant)
+  						numLastAuth=0
+  					end
+  				elsif(tagComments.length < convoLen)
+  					numLastAuth=0
+  				end
+  				temp=currAuthor
+		  		currAuthor=secAuthor
+		  		secAuthor=temp
+  			end
+  		end  		
+  		if(isConvo && tagComments.size == convoLen)
+  			if((comments[pos-1].participant!=currAuthor) && (comments[pos-1].participant!=secAuthor))
+	  			if((comments[pos].participant==currAuthor) || (comments[pos].participant==secAuthor))
+	  				if(comments[pos-2].participant != comments[pos].participant)
+	  					numLastAuth=1
+	  					tagComments.push(comments[pos])
+	  					pos+=1
+	  				elsif(numLastAuth<maxContinuous)
+	  					numLastAuth+=1
+	  					tagComments.push(comments[pos])
+	  					pos+=1
+	  				end
+	  			end
+	  		elsif(comments[pos].participant!=comments[pos-1].participant)
+	  			numLastAuth=0
+	  		end
+  			continue=true
+  			while(continue && (pos<comments.size) && ((comments[pos].participant==currAuthor) || (comments[pos].participant==secAuthor)))
+  				if(comments[pos].participant==comments[pos-1].participant)
+  					if(numLastAuth<maxContinuous)
+  						numLastAuth+=1
+  						tagComments.push(comments[pos])
+  						pos+=1
+  					else
+  						continue=false
+  					end
+  				else
+	  				numLastAuth=1
+	  				tagComments.push(comments[pos])
+	  				pos+=1
+	  			
+  				end  				
+  			end
+  			tagComments.each do |curr|
+  				curr.tags.first_or_create(:name=>"conversation")
+  			end
+  			x=pos
+  		else 
+  			x+=1
+  		end
+  	end
+  end
+
 end
 
 #inner Join: select t1.participant_id from networks as t1 inner join issues as t2 on t1.issue_id=t2.id;
