@@ -1,5 +1,6 @@
 class Issue
   include DataMapper::Resource
+  include ActionView::Helpers::DateHelper
   property :id,           Serial
   property :title,        String,:length=>1000
   property :status,	String
@@ -76,16 +77,22 @@ class Issue
     date2 = Time.now
     days = 0
     if(recency != 0)
-      #date1 = DateTime.rfc3339(recency)
-      days = recency#(date2-date1).to_f
-      threadString = "days"
-      if(days==1)
-        threadString = "day"
-      end
+      puts "recency: " + recency.to_s
+      date1 = DateTime.rfc3339(recency.to_s)
+      days = distance_of_time_in_words(date1, date2)
     end
-#2013-03-14T21:44:00-05:00
-    description.concat(", and participated in a thread #{days} #{threadString} ago.")
+    description.concat(", and last participated in a usability thread #{days} ago.")
 
+  end
+  def find_participant_consensus(p_id)
+    adapter = DataMapper.repository(:default).adapter
+    res = adapter.select("SELECT COUNT(t2.status) AS cb FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id=#{p_id};")
+    return res[0]
+  end
+  def find_participant_recency(p_id)
+    adapter = DataMapper.repository(:default).adapter
+    res = adapter.select("SELECT max(t1.commented_at) FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id=#{p_id};")
+    return res[0]
   end
   #randomly selects 10 participants between 100 experienced members who are not participating in this thread
   def find_experienced_potential_participants
@@ -100,7 +107,9 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, 0, 0)#Time.now)
+      consensus = find_participant_consensus(p_id) 
+      recency = find_participant_recency(p_id)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, recency)#Time.now)
       
       potentials.push currentPInfo
       indx = indx + 1
@@ -122,7 +131,9 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, 0, 0)#Time.now)
+      consensus = find_participant_consensus(p_id) 
+      recency = find_participant_recency(p_id)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, recency)#Time.now)
 
       potentials.push currentPInfo
       indx = indx + 1
@@ -164,7 +175,8 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], 0)#Time.now)
+      recency = find_participant_recency(row[0])
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], recency)#Time.now)
       
       potentials.push currentPInfo
       indx = indx + 1
@@ -205,7 +217,7 @@ class Issue
   def find_recent_potential_participants
     adapter = DataMapper.repository(:default).adapter
     issueid = Issue.first(:link => link).id
-    res = adapter.select("SELECT t1.participant_id, t1.commented_at FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY t1.commented_at DESC;")
+    res = adapter.select("SELECT t1.participant_id, MAX(t1.commented_at) FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY t1.commented_at DESC;")
     indx = 0
     potentials = Array.new
     res.each do |row|
@@ -214,7 +226,8 @@ class Issue
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, 0, row[1])
+      consensus = find_participant_consensus(row[0])
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, row[1])
       
       potentials.push currentPInfo
       indx = indx + 1
