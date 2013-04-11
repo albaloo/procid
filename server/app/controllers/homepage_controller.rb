@@ -105,9 +105,6 @@ class HomepageController < ApplicationController
 			curr_json["title"]=curr.title
 			curr_json["description"]=curr.description
 			criteria_json.push curr_json		
-	#createCriterion("Simple", "Complex", "1", "The text should be simple.");
-	#createCriterion("Explains", "Doesn't Explain", "2", "The text should be explanatory.");
-	#createCriterion("Less", "More", "3", "We need less information.");
 		end
 		final_json=Hash.new
 		final_json["issueComments"]=comments_json

@@ -39,24 +39,28 @@ class Issue
   def gather_participant_info_description (currentParticipant, num, recency)
     description = ""
     #Experience
-    year = currentParticipant.experience/52
-    yearString="years"
-    week = currentParticipant.experience%52
-    weekString="weeks"
+    if(currentParticipant.experience.nil?)
+      description.concat("experience info is not available")
+    else
+      year = currentParticipant.experience/52
+      yearString="years"
+      week = currentParticipant.experience%52
+      weekString="weeks"
     
-    if(year == 1)
-      yearString = "year"
-    end
-    if(week == 1)
-      weekString = "week"
-    end
+      if(year == 1)
+        yearString = "year"
+      end
+      if(week == 1)
+        weekString = "week"
+      end
 
-    if(year>0 and week>0)
-      description.concat("has #{year} #{yearString} and #{week} #{weekString} of experience")
-    elsif(year>0)
-      description.concat("has #{year} #{yearString} of experience")
-    elsif(week>0)
-      description.concat("has #{week} #{weekString} of experience")
+      if(year>0 and week>0)
+        description.concat("has #{year} #{yearString} and #{week} #{weekString} of experience")
+      elsif(year>0)
+        description.concat("has #{year} #{yearString} of experience")
+      elsif(week>0)
+        description.concat("has #{week} #{weekString} of experience")
+      end
     end
 
     #Patch
