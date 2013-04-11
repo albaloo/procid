@@ -290,11 +290,21 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			return $(this).attr('href');
 		});
 		//CommentAuthor: <div class="submitted">Posted by <a href="/user/24967" title="View user profile.">webchick</a> on <em>November 8, 2008 at 8:20pm</em></div>
-		var array_author = $("#comments div[class='submitted'] a").map(function() {
-			return $(this).text();
+		var array_author = $("#comments div[class='submitted']").map(function() {
+			var authors=$(this).find("a");
+			if(authors.length > 0)
+				return $(this).find("a").text();
+			else
+				return "Anonymous";
+				//return $(this).text();
 		});
-		var array_author_hrefs = $("#comments div[class='submitted'] a").map(function() {
-			return $(this).attr('href');
+		var array_author_hrefs = $("#comments div[class='submitted']").map(function() {
+			//return $(this).attr('href');
+			var authors=$(this).find("a");
+			if(authors.length > 0)
+				return $(this).find("a").attr("href");
+			else
+				return "#";
 		});
 
 		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
