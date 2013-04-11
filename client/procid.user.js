@@ -235,22 +235,28 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			href : '#',
 			rel : 'tooltip',
 			title : tooltipText
-		}).click(function highlightMustRead(evt) {
+		}).click(function highlightComments(evt) {
 			if ($("div[id='procid-comment-" + name + "'] a").hasClass('unselected')) {
 				$("div[id='procid-comment-" + name + "'] a").attr('class', 'selected');
 				$("div[id='procid-comment-" + name + "'] img").attr('class', 'image-selected');
-				$("div[id='procid-comment-" + name + "'] img").attr('src', ABSOLUTEPATH + '/images/' + name + '.png');
+				$("div[id='procid-comment-" + name + "'] img").attr('src', ABSOLUTEPATH + '/images/' + name + '-tiny.png');
+				$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-3.png')
 			} else {
 				$("div[id='procid-comment-" + name + "'] a").attr('class', 'unselected');
 				$("div[id='procid-comment-" + name + "'] img").attr('class', 'image-unselected');
+				$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-1.png')
 			}
 			return true;
 
+		}).mouseover(function highlightLensIcon(evt) {
+			$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-2.png')
+		}).mouseout(function undoHighlightLensIcon(evt) {
+			$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-1.png')
 		}).appendTo("#procid-" + name);
 
 		$('<img />').attr({
 			id : 'procid-' + name + '-image',
-			src : ABSOLUTEPATH + '/images/' + name + '.png',
+			src : ABSOLUTEPATH + '/images/' + name + '-1.png',
 		}).appendTo("#procid-" + name + '-link');
 
 	}
@@ -430,7 +436,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		lenses.setAttribute('id', 'procid-lenses');
 		$("#procid-left-panel-body").append(lenses);
 
-		createLense('must-read', 'procid-lenses', 'View Must Read Comments');
+		createLense('mustread', 'procid-lenses', 'View Must Read Comments');
 		createLense('idea', 'procid-lenses', 'View Ideas');
 		createLense('conversation', 'procid-lenses', 'View Conversation Comments');
 		createLense('expert', 'procid-lenses', 'View Comments Posted by Experts');
