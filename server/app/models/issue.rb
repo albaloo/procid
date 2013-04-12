@@ -80,12 +80,15 @@ class Issue
     #Recent Participation
     date2 = Time.now
     days = 0
-    if(recency != 0)
+    if(recency != 0 && !(recency.nil?))
       puts "recency: " + recency.to_s
       date1 = DateTime.rfc3339(recency.to_s)
       days = distance_of_time_in_words(date1, date2)
+      description.concat(", and last participated in a usability thread #{days} ago.")
+    else
+      description.concat(", and did not participate in a usability thread recently.")
     end
-    description.concat(", and last participated in a usability thread #{days} ago.")
+    
 
   end
   def find_participant_consensus(p_id)

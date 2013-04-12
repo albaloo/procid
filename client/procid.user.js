@@ -557,17 +557,22 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		if(criteria.length > 0){
 			newCriterion.id=criteria[criteria.length-1].id+1;
 		}
+
+		var divCriteria = document.createElement('div');
+			divCriteria.setAttribute('id', 'procid-overlay-div-block');
+			$("#procid-overlay-div").append(divCriteria);
+
 		var title = document.createElement('label');
-		title.setAttribute('id', 'procid-criteria-lower-label');
+		title.setAttribute('id', 'procid-criteria-new-title');
 		title.innerHTML = "Title";
 		divCriteria.appendChild(title);
 
 		var titleInput = document.createElement('input');
-		titleInput.setAttribute('id', 'procid-criteria-lower' + this.id);
+		titleInput.setAttribute('id', 'procid-criteria-new_title_input');
 		titleInput.setAttribute('type', 'text');
 		titleInput.setAttribute('name', 'labelInput');
 		titleInput.value = "Title of the new Criteria";
-		$("#procid-criteria-lower" + this.id).bind("keyup change", function() {
+		$("#procid-criteria-new_title_input").bind("keyup change", function() {
 			newCriterion.title = this.value;
 		});
 		divCriteria.appendChild(titleInput);
@@ -578,11 +583,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		divCriteria.appendChild(descriptionLabel);
 
 		var description = document.createElement('input');
-		description.setAttribute('id', 'procid-criteria-description' + this.id);
+		description.setAttribute('id', 'procid-criteria-description');
 		description.setAttribute('type', 'text');
 		description.setAttribute('name', 'description');
 		description.value = "Describe the criteria...";
-		$("#procid-criteria-description" + this.id).bind("keyup change", function() {
+		$("#procid-criteria-description").bind("keyup change", function() {
 			newCriterion.description = this.value;
 		});
 		divCriteria.appendChild(description);
@@ -594,6 +599,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		saveButton.value = "Save";
 		saveButton.onclick = function(e) {
 			var i = 0;
+			criteria.push(newCriterion);
 			$.each(tempCriteria, function() {
 				criteria[i].label = $("#procid-criteria-lower" + this.id).val();
 				$(".procid-svg-criteria-lower" + this.id).map(function() {
