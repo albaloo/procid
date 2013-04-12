@@ -48,8 +48,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master/client';
 	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
 	//'http://web.engr.illinois.edu/~rzilouc2/procid';
-	//var serverURL='http://0.0.0.0:3000/'
-	var serverURL='http://protected-dawn-3784.herokuapp.com/'	
+	var serverURL='http://0.0.0.0:3000/';
+	//var serverURL='http://protected-dawn-3784.herokuapp.com/';	
 	var commentInfos = [];
 	var criteria = [];
 	var allCriteria = [];
@@ -600,6 +600,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		saveButton.onclick = function(e) {
 			var i = 0;
 			criteria.push(newCriterion);
+			//TODO: Username needs to be determined
+			$.post(serverURL+"addCriteria", {
+				"issueLink" : issue.link, "userName" : "webchick", "title" : newCriterion.title, "description" : newCriterion.description, id : newCriterion.id}, function() {
+					console.log("success");
+				});
 			$.each(tempCriteria, function() {
 				criteria[i].label = $("#procid-criteria-lower" + this.id).val();
 				$(".procid-svg-criteria-lower" + this.id).map(function() {

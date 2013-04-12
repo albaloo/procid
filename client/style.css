@@ -246,21 +246,31 @@ img.image-unselected {
 }
 
 h3.ideaPage-header-label {
-	display: table-cell;
+	display: inline-block;
 	color: #1F1F20;
 	text-shadow: 0 1px 0 #fff;
 	font-size: 16px;
 	margin: 8px 0 3px 6px;
-	width: 10%;
+	width: 230px;
 	/*background:#f8f8f8;*/
-	text-align: center;
+	text-align: left;
+}
+
+#procid-Idea-label{
+	margin-left: 16%;
+	padding-right: 18px;
+	
+}
+
+#procid-Status-label {
+	padding-left: 20px;
 }
 
 #procid-idea-block {
 	background: #F0F0F0;
-	max-height: 200px;
-	max-width: 1600px;
-	margin: 20px auto;
+	height: 200px;
+	width: 1000px;
+	margin: 20px 0 20px 16%;
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
      border-radius: 3px;
@@ -273,17 +283,17 @@ h3.ideaPage-header-label {
 	text-align: center;
 	height: 160px;
 	vertical-align: top;
-	width: 20%;
+	width: 250px;
 }
 
 .procid-idea-block-outer-cell {
 	/*display: table-cell;*/
 	display: inline-block;
-	margin: 8px 0 3px 6px;
+	margin: 15px 0 3px 6px;
 	text-align: left;
 	height: 160px;
 	vertical-align: top;
-	width: 20%;
+	width: 230px;
 }
 
 
@@ -309,39 +319,41 @@ a.ideaPage-link {
 
 #procid-ideaPage-image {
 	/*display: inline;*/
-	max-width: 320px;
-	height: 120px;
+	width: 320px;
 }
 
 #procid-idea-div-image {
-	/*white-space: nowrap;*/
-	max-width: 320px;
+	width: 200px;
 	height: 120px;
-	line-height: 20px;
-	margin: 10px 10px 10px 10px;
+	font-size: .9em;
+	line-height: 1.5em;
+	padding: 10px;
+	margin: 10px 5px 10px 5px;
 	/*vertical-align: middle;*/
 	background: #E6E6e6;
 	text-overflow: ellipsis;
-	overflow: hidden;
+	overflow: scroll;
+	overflow-x: hidden;
 	/*clear:left;*/
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
      border-radius: 3px;
 }
 
-#procid-idea-div-image:hover {
-	overflow: visible;
+/*#procid-idea-div-image:hover {
 	white-space: normal;
 	width: auto;
 	position: absolute;
+	overflow: scroll;
+	overflow: hidden;
 	background-color: #FFF;
-}
+}*/
 
 .wrapper-dropdown {
     /* Size and position */
     position: relative;
     width: 150px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 10px;
  
     /* Styles */
@@ -450,6 +462,8 @@ a.ideaPage-link {
     opacity: 1;
     pointer-events: auto;
 }
+
+
 /*#procid-idea-comment{
  display: table-cell;
  margin: 8px 0 3px 6px;
@@ -464,9 +478,9 @@ height: 20px;
 #procid-idea-comment-img
 {
 float: left; 
-margin: 5px 10px 5px 0;
-width: 20px; 
-height: 20px;
+margin: 0px 10px 0px 0;
+width: 18px; 
+height: 16px;
 }
 #procid-idea-comment-header{
   display: inline-block;
@@ -475,8 +489,12 @@ height: 20px;
 }
 #procid-idea-comment-columns {
   display: inline-block;
-  vertical-align: top;
+  margin: 12px 0 0 15px;
   max-width: 75%;
+}
+#procid-idea-comment-column {
+  height: 14px;
+  padding: 3px 0 1px 0;
 }
 
 #procid-idea-comment-divider{
@@ -485,7 +503,7 @@ height:5px;
 }
 
 #procid-idea-comment-div-icon{
-	margin: 10px 1px 10px 0;
+	margin: 12px 1px 12px 0;
 	max-height: 150px;
 }
 

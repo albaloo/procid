@@ -18,7 +18,7 @@ gem 'dm-active_model', '1.2.1', :git => 'https://github.com/datamapper/dm-active
 
 
 
-  gem 'dm-postgres-adapter', 	DM_VERSION
+#  gem 'dm-postgres-adapter', 	DM_VERSION
 
 
 gem 'dm-migrations',        DM_VERSION
