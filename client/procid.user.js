@@ -599,6 +599,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		saveButton.value = "Save";
 		saveButton.onclick = function(e) {
 			var i = 0;
+			newCriterion.description=description.value;
+			newCriterion.title=titleInput.value;
 			criteria.push(newCriterion);
 			//TODO: Username needs to be determined
 			$.post(serverURL+"addCriteria", {
@@ -876,6 +878,16 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		else
 			return result[0];
 	}
+	var findCriteriaTitle = function(id){
+		var result = $.grep(criteria, function(e) {
+			return e.id == id;
+		});
+		if (result.length == 0)
+			return -1;
+		else
+			return result[0].title;
+		
+	}
 	var editCriterionValue = function(commentInfo, criterion) {
 		if ($.inArray(criterion, commentInfos.criteria) != -1)
 			//TODO: remove criterion
@@ -896,6 +908,14 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
     		.attr("x", "5")
     		.attr('y', "15")
     		.attr("height", "30");	
+
+		d3.selectAll(".selector").data(allCriteria).append("svg:text")
+	      	.attr("class", "procid-criteria-title")
+      		.attr("dx", "100")
+		.attr("dy", "20")
+		.text(function(d) {
+				return findCriteriaTitle(d.id);
+			});
 
 		d3.selectAll(".selector").data(allCriteria).append("svg:circle")
 			.attr("class", "selectorCircle")
