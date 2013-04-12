@@ -17,4 +17,20 @@ class IdeapageController < ApplicationController
 
 		render :json => { }
 	end
+
+        def addCriteria
+
+	end
+
+	def editCriteria
+
+	end
+
+	def deleteCriteria
+
+	end
+
+	def addComment
+
+	end
 end

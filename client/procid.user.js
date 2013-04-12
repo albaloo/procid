@@ -48,6 +48,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master/client';
 	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
 	//'http://web.engr.illinois.edu/~rzilouc2/procid';
+	//var serverURL='http://0.0.0.0:3000/'
+	var serverURL='http://protected-dawn-3784.herokuapp.com/'	
 	var commentInfos = [];
 	var criteria = [];
 	var allCriteria = [];
@@ -131,15 +133,36 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			id : 'procid-menus',
 		}).appendTo("#procid-left-panel-header");
 
+		$("#procid-menus").css("border-image", "url(" + ABSOLUTEPATH + "images/top-line.png) 13 2 round");
 		//Procid Label
-		$('<h3 />').attr({
+		$('<img />').attr({
 			id : 'procid-label',
-		}).text('Procid').appendTo("#procid-menus");
+			src: ABSOLUTEPATH + '/images/procid-label.png',
+		}).appendTo("#procid-menus");
+
+		//Setting
+		$('<a />').attr({
+			id : 'procid-setting-link',
+			href : '#',
+			rel : 'tooltip',
+			title : 'Settings'
+		}).click(function goSetting(evt) {
+
+		}).appendTo("#procid-menus");
+
+		$('<img />').attr({
+			id : 'procid-setting-image',
+			src : ABSOLUTEPATH + '/images/setting.png',
+		}).appendTo("#procid-setting-link");
+
+		$('<div />').attr({
+			id : 'procid-menus-navigation-panel',
+		}).appendTo("#procid-menus");
 
 		//Home
 		$('<li />').attr({
 			id : 'procid-home',
-		}).appendTo("#procid-menus");
+		}).appendTo("#procid-menus-navigation-panel");
 
 		$('<a />').attr({
 			id : 'procid-home-link',
@@ -158,7 +181,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		//Idea-based
 		$('<li />').attr({
 			id : 'procid-ideaBased',
-		}).appendTo("#procid-menus");
+		}).appendTo("#procid-menus-navigation-panel");
 
 		$('<a />').attr({
 			id : 'procid-ideaBased-link',
@@ -177,7 +200,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		//Invite
 		$('<li />').attr({
 			id : 'procid-invite',
-		}).appendTo("#procid-menus");
+		}).appendTo("#procid-menus-navigation-panel");
 
 		$('<a />').attr({
 			id : 'procid-invite-link',
@@ -193,20 +216,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			src : ABSOLUTEPATH + '/images/invite.png',
 		}).appendTo("#procid-invite-link");
 
-		//Setting
-		$('<a />').attr({
-			id : 'procid-setting-link',
-			href : '#',
-			rel : 'tooltip',
-			title : 'Settings'
-		}).click(function goSetting(evt) {
-
-		}).appendTo("#procid-menus");
-
-		$('<img />').attr({
-			id : 'procid-setting-image',
-			src : ABSOLUTEPATH + '/images/setting.png',
-		}).appendTo("#procid-setting-link");
+		
 	}
 	var addSearchPanel = function(name, parent) {
 		$('<form />').attr({
@@ -448,7 +458,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		});
 
 		
-		$.post("http://0.0.0.0:3000/postcomments", {
+		$.post(serverURL+"postcomments", {
 			"issue" : JSON.stringify(issue),
 			"commentInfos" : JSON.stringify(commentInfos)
 		}, function(data) {
@@ -516,7 +526,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			titleInput.setAttribute('name', 'labelInput');
 			titleInput.value = this.title;
 			$("#procid-criteria-lower" + this.id).bind("keyup change", function() {
-				//tempCriteria[i].lower = this.value; i is the last i
+				//tempCriteria[i].label = this.value; i is the last i
 			});
 			divCriteria.appendChild(titleInput);
 
@@ -536,6 +546,45 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			divCriteria.appendChild(description);
 
 		});
+		
+		var newCriterion = {
+			id : 1,
+			title : "",
+			description : ""
+		}
+		if(criteria.length > 0){
+			newCriterion.id=criteria[criteria.length-1].id+1;
+		}
+		var title = document.createElement('label');
+		title.setAttribute('id', 'procid-criteria-lower-label');
+		title.innerHTML = "Title";
+		divCriteria.appendChild(title);
+
+		var titleInput = document.createElement('input');
+		titleInput.setAttribute('id', 'procid-criteria-lower' + this.id);
+		titleInput.setAttribute('type', 'text');
+		titleInput.setAttribute('name', 'labelInput');
+		titleInput.value = "Title of the new Criteria";
+		$("#procid-criteria-lower" + this.id).bind("keyup change", function() {
+			newCriterion.title = this.value;
+		});
+		divCriteria.appendChild(titleInput);
+
+		var descriptionLabel = document.createElement('label');
+		descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
+		descriptionLabel.innerHTML = "Description";
+		divCriteria.appendChild(descriptionLabel);
+
+		var description = document.createElement('input');
+		description.setAttribute('id', 'procid-criteria-description' + this.id);
+		description.setAttribute('type', 'text');
+		description.setAttribute('name', 'description');
+		description.value = "Describe the criteria...";
+		$("#procid-criteria-description" + this.id).bind("keyup change", function() {
+			newCriterion.description = this.value;
+		});
+		divCriteria.appendChild(description);
+
 
 		var saveButton = document.createElement('input');
 		saveButton.setAttribute('id', 'procid-criteria-save');
@@ -667,7 +716,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				obj.val = opt.text();
 				obj.index = opt.index();
 				wrapperDropdownText.innerHTML = obj.val;
-				$.post("http://0.0.0.0:3000/setIdeaStatus", {
+				$.post(serverURL+"setIdeaStatus", {
 				"issueLink" : issue.link, "commentTitle" : commentInfo.title, "status" : opt.text()
 				}, function() {
 					console.log("success");
@@ -887,6 +936,16 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		divIdeaBlock.appendChild(divCriteria);
 		var counter = 0;
 
+		if(criteria.length == 0){
+			var link1 = document.createElement('a');
+			link1.setAttribute('id', 'procid-edit-link');
+			link1.setAttribute('href', "#");
+			link1.innerHTML = "add a new criteria";
+			link1.onclick = function(e) {
+				createOverlay();
+			};				
+		}
+
 		$.each(criteria, function() {
 			var divCriterion = document.createElement('div');
 			divCriterion.setAttribute('id', 'procid-idea-criterion');
@@ -937,7 +996,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	}
 	var findPeopletoInvite = function() {
 		var suggestedMembers = [];
-		$.post("http://0.0.0.0:3000/findPotentialParticipants", {
+		$.post(serverURL+"findPotentialParticipants", {
 			"issueLink" : issue.link
 		}, function(data) {
 			$.each(data.invitedMembers, function(i, member) {
@@ -1028,9 +1087,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	//Procid Header
 	createProcidHeader();
 
-	var hr = document.createElement('hr');
-	hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
-	$("#procid-left-panel-header").append(hr);
+	//var hr = document.createElement('hr');
+	//hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
+	//$("#procid-left-panel-header").append(hr);
 
 	/*createCriterion("Simple", "Complex", "1", "The text should be simple.");
 	createCriterion("Explains", "Doesn't Explain", "2", "The text should be explanatory.");
