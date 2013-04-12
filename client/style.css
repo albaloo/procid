@@ -1,5 +1,5 @@
 #procid-page-wrapper {
-	margin: 0 0 0 16%;/*230px;*/
+	margin: 0 0 0 17%;/*230px;*/
 }
 
 #procid-outer-page-wrapper {
@@ -17,7 +17,8 @@
 	/*width:16%;*/
 	height: 40px;
 	margin: 0px 0px 0px 0px;
-	background: #0D7DC1;/*#064771;*/
+	background: #6bb3e2;/*#064771;*/
+	border-bottom: 1px solid #538baf;
 	/*position:absolute;*/
 	/*vertical-align: top;*/
 }
@@ -25,10 +26,9 @@
 #procid-left-panel hr {
 	border: none;
 	outline: none;
-	/*ackground: url(./images/sidebar_divider.png) repeat-x;*/
-	display: block;
+	display: none;
 	width: 100%;
-	height: 2px;
+	/*height: 2px;*/
 }
 
 #procid-left-panel .toggleLink:hover {
@@ -39,34 +39,47 @@
 #procid-menus {
 	list-style: none;
 	padding: 0;
-	margin: 4px 4px 4px 4px;
-	overflow: hidden;
+	border-top: 2px solid transparent;
+	/*border-image:url(./images/top-line.png) 13 2 round;*/
+	/*margin: 4px 4px 4px 4px;*/
+	/*overflow: hidden;*/
 }
 
-#procid-menus h3 {
+#procid-menus #procid-label {
 	float: left;
 	display: inline;
 	color: #FFFFFF;/*#1F1F20;*/
 	text-transform: uppercase;
 	text-shadow: 0 1px 0 #fff;
 	font-size: 13px;
-	margin: 8px 0 3px 6px;
-	width: 7%;
-	background: #0D7DC1;/*#064771;#f8f8f8;*/
+	width: 78px;
+	height: 20px;
+	margin: 10px 0 10px 15px;
+	/*background: #0D7DC1; #064771;#f8f8f8;*/
 }
 
 #procid-menus li {
 	float: left;
-	display: inline;
-	width: 36px;
-	height: 36px;
-	margin: 1px 2px 1px 1px;
+	width: 25px;
+	height: 33px;
+	padding: 5px 12px 0 15px;
+	border-left: 2px solid transparent;
+	/*border-image:url(./images/icon-border-left.png) 2 5 round;*/
+}
+
+#procid-invite {
+	border-right: 2px solid transparent;
+	/*border-image:url(./images/icon-border-left.png) 2 5 round;*/
+}
+
+#procid-menus-navigation-panel {
+	margin-left: 16%;
 }
 
 #procid-menus li a {
 	/*display:block;*/
-	width: 34px;
-	height: 34px;
+	width: 26px;
+	height: 26px;
 	overflow: hidden;
 	border: 1px solid transparent;
 	line-height: 34px;
@@ -78,18 +91,24 @@
 }
 
 #procid-menus a {
-	float: right;
+	float: left;
 	display: inline;
-	width: 34px;
-	height: 34px;
+	width: 25px;
+	height: 26px;
 	overflow: hidden;
 	border: 1px solid transparent;
-	line-height: 34px;
+	line-height: 26px;
 	text-decoration: none;
 	text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
 	border-radius: 2px;
+}
+
+#procid-setting-link {
+	margin-left: 15px;
+	padding-top: 5px;
+	
 }
 
 #procid-menus ul li a:hover, ul li a:focus, ul li a:active {
@@ -217,7 +236,6 @@ img.image-unselected {
 #procid-idea-page-wrapper hr {
 	border: none;
 	outline: none;
-	/*background: url(./images/sidebar_divider.png) repeat-x;*/
 	display: block;
 	width: 100%;
 	height: 2px;

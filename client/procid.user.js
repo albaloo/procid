@@ -133,7 +133,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			id : 'procid-menus',
 		}).appendTo("#procid-left-panel-header");
 
-		$("#procid-menus").css("border-image", "url(" + ABSOLUTEPATH + "images/top-line.png) 13 2 round");
+		$("#procid-menus").css("border-image", "url(" + ABSOLUTEPATH + "/images/top-line.png) 13 2 round");
 		//Procid Label
 		$('<img />').attr({
 			id : 'procid-label',
@@ -152,7 +152,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		$('<img />').attr({
 			id : 'procid-setting-image',
-			src : ABSOLUTEPATH + '/images/setting.png',
+			src : ABSOLUTEPATH + '/images/settings-1.jpg',
 		}).appendTo("#procid-setting-link");
 
 		$('<div />').attr({
@@ -175,7 +175,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		$('<img />').attr({
 			id : 'procid-home-image',
-			src : ABSOLUTEPATH + '/images/home.png',
+			src : ABSOLUTEPATH + '/images/home-1.jpg',
 		}).appendTo("#procid-home-link");
 
 		//Idea-based
@@ -194,13 +194,15 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		$('<img />').attr({
 			id : 'procid-ideaBased-image',
-			src : ABSOLUTEPATH + '/images/ideaBased.png',
+			src : ABSOLUTEPATH + '/images/dashboard-1.jpg',
 		}).appendTo("#procid-ideaBased-link");
 
 		//Invite
 		$('<li />').attr({
 			id : 'procid-invite',
 		}).appendTo("#procid-menus-navigation-panel");
+
+		$("#procid-invite").css("border-image", "url("+ ABSOLUTEPATH +"/images/icon-border-left.png) 2 5 round");
 
 		$('<a />').attr({
 			id : 'procid-invite-link',
@@ -213,10 +215,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		$('<img />').attr({
 			id : 'procid-invite-image',
-			src : ABSOLUTEPATH + '/images/invite.png',
+			src : ABSOLUTEPATH + '/images/invite-1.jpg',
 		}).appendTo("#procid-invite-link");
 
-		
+		$("#procid-menus li").css("border-image", "url("+ ABSOLUTEPATH +"/images/icon-border-left.png) 2 5 round");
 	}
 	var addSearchPanel = function(name, parent) {
 		$('<form />').attr({
