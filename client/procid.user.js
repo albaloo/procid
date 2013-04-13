@@ -383,32 +383,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		}
 		return commentInfos;
 	}
-	var findTags = function(commentInfo) {
-
-		var randomMust = Math.floor(Math.random() * 4);
-		var randomIdea = Math.floor(Math.random() * 7);
-		var randomConv = Math.floor(Math.random() * 5);
-		var randomExprt = Math.floor(Math.random() * 3);
-		var randomPatch = Math.floor(Math.random() * 2);
-
-		if (randomMust == 1) {
-			commentInfo.tags.push('must-read')
-		}
-		if (randomIdea == 1) {
-			commentInfo.tags.push('idea')
-		}
-		if (randomConv == 1) {
-			commentInfo.tags.push('conversation')
-		}
-		if (randomExprt == 1) {
-			commentInfo.tags.push('expert')
-		}
-		if (randomPatch == 1) {
-			commentInfo.tags.push('patch')
-		}
-
-		return commentInfo;
-	}
+	
 	var applyTags = function(commentInfo) {
 
 		var div1 = document.createElement('div');
