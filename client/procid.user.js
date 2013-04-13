@@ -260,9 +260,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			}
 			return true;
 
-		}).hover(function highlightLensIcon(evt) {
+		})/*.hover(function highlightLensIcon(evt) {
 			$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-2.png')
-		}).appendTo("#procid-" + name);
+		})*/.appendTo("#procid-" + name);
 
 		$('<img />').attr({
 			id : 'procid-' + name + '-image',
