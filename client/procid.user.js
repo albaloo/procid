@@ -66,6 +66,12 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		loadScript("//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"); 
 		}
 
+	var visualLength = function(inputString){
+		var ruler = $("#procid-ruler");
+		ruler.innerHTML = inputString;
+		return ruler.offsetWidth;
+	}
+
 	var addCSSToHeader = function() {
 		var header = document.getElementsByTagName('head')[0];
 		var csslink = document.createElement('link');
@@ -128,6 +134,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 	}
 	var createProcidHeader = function() {
+		//Ruler
+		$('<span />').attr({
+			id : 'procid-ruler',
+		}).appendTo("#procid-left-panel-header");
+
 		//Menu
 		$('<ul />').attr({
 			id : 'procid-menus',
@@ -451,73 +462,75 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		});
 
 	}
-	var createOverlay = function() {
-		var overlay = document.createElement("div");
-		overlay.setAttribute("id", "procid-overlay");
-		overlay.onclick = function(e) {
-			document.body.removeChild(document.getElementById("procid-overlay"));
-			document.body.removeChild(document.getElementById("procid-overlay-div"));
+	var createEditCriteriaBox = function() {
+		var editCriteriaBox = document.createElement("div");
+		editCriteriaBox.setAttribute("id", "procid-editCriteriaBox");
+		editCriteriaBox.onclick = function(e) {
+			document.body.removeChild(document.getElementById("procid-editCriteriaBox"));
+			document.body.removeChild(document.getElementById("procid-editCriteriaBox-div"));
 		};
-		$('body').append(overlay);
+		$('body').append(editCriteriaBox);
 
-		var overlayDiv = document.createElement("div");
-		overlayDiv.setAttribute("id", "procid-overlay-div");
-		$('body').append(overlayDiv);
+		var editCriteriaBoxDiv = document.createElement("div");
+		editCriteriaBoxDiv.setAttribute("id", "procid-editCriteriaBox-div");
+		$('body').append(editCriteriaBoxDiv);
 
 		//<a id="close" href="#"></a>
-		var overlayDivClose = document.createElement("img");
-		overlayDivClose.setAttribute("id", "procid-overlay-div-close");
-		overlayDivClose.setAttribute("src", ABSOLUTEPATH + '/images/closeButton.png');
-		overlayDivClose.onclick = function(e) {
-			document.body.removeChild(document.getElementById("procid-overlay"));
-			document.body.removeChild(document.getElementById("procid-overlay-div"));
+		var editCriteriaBoxDivClose = document.createElement("img");
+		editCriteriaBoxDivClose.setAttribute("id", "procid-editCriteriaBox-div-close");
+		editCriteriaBoxDivClose.setAttribute("src", ABSOLUTEPATH + '/images/closeButton.png');
+		editCriteriaBoxDivClose.onclick = function(e) {
+			document.body.removeChild(document.getElementById("procid-editCriteriaBox"));
+			document.body.removeChild(document.getElementById("procid-editCriteriaBox-div"));
 		};
-		$("#procid-overlay-div").append(overlayDivClose);
+		$("#procid-editCriteriaBox-div").append(editCriteriaBoxDivClose);
 
 		var label = document.createElement('h3');
-		label.setAttribute('id', 'procid-overlay-header-label');
+		label.setAttribute('id', 'procid-editCriteriaBox-header-label');
 		label.innerHTML = "Edit Criteria";
-		$("#procid-overlay-div").append(label);
+		$("#procid-editCriteriaBox-div").append(label);
 
 		var hr = document.createElement('hr');
 		hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
-		$("#procid-overlay-div").append(hr);
+		$("#procid-editCriteriaBox-div").append(hr);
 
 		var tempCriteria = [];
 		$.each(criteria, function() {
 			//<input type='text' name='txt'>
 			var divCriteria = document.createElement('div');
-			divCriteria.setAttribute('id', 'procid-overlay-div-block');
-			$("#procid-overlay-div").append(divCriteria);
+			divCriteria.setAttribute('id', 'procid-editCriteriaBox-div-block');
+			$("#procid-editCriteriaBox-div").append(divCriteria);
 
 			tempCriteria.push(this);
 
 			var title = document.createElement('label');
-			title.setAttribute('id', 'procid-criteria-lower-label');
+			title.setAttribute('id', 'procid-editCriteriaBox-title-label');
 			title.innerHTML = "Title";
 			divCriteria.appendChild(title);
 
 			var titleInput = document.createElement('input');
-			titleInput.setAttribute('id', 'procid-criteria-lower' + this.id);
+			titleInput.setAttribute('id', 'procid-editCriteriaBox-title-input' + this.id);
+			titleInput.setAttribute('class', 'titleInput');
 			titleInput.setAttribute('type', 'text');
 			titleInput.setAttribute('name', 'labelInput');
 			titleInput.value = this.title;
-			$("#procid-criteria-lower" + this.id).bind("keyup change", function() {
-				//tempCriteria[i].label = this.value; i is the last i
+			$("#procid-editCriteriaBox-title-input" + this.id).bind("keyup change", function() {
+				//tempCriteria[i].title = this.value; i is the last i
 			});
 			divCriteria.appendChild(titleInput);
 
 			var descriptionLabel = document.createElement('label');
-			descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
+			descriptionLabel.setAttribute('id', 'procid-editCriteriaBox-description-label');
 			descriptionLabel.innerHTML = "Description";
 			divCriteria.appendChild(descriptionLabel);
 
 			var description = document.createElement('input');
-			description.setAttribute('id', 'procid-criteria-description' + this.id);
+			description.setAttribute('id', 'procid-editCriteriaBox-description-input' + this.id);
+			description.setAttribute('class', 'descriptionInput');
 			description.setAttribute('type', 'text');
 			description.setAttribute('name', 'description');
 			description.value = this.description;
-			$("#procid-criteria-description" + this.id).bind("keyup change", function() {
+			$("#procid-editCriteriaBox-description-input" + this.id).bind("keyup change", function() {
 				//tempCriteria[i].description = this.value;
 			});
 			divCriteria.appendChild(description);
@@ -534,42 +547,37 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		}
 
 		var divCriteria = document.createElement('div');
-			divCriteria.setAttribute('id', 'procid-overlay-div-block');
-			$("#procid-overlay-div").append(divCriteria);
+			divCriteria.setAttribute('id', 'procid-editCriteriaBox-div-block');
+			$("#procid-editCriteriaBox-div").append(divCriteria);
 
 		var title = document.createElement('label');
-		title.setAttribute('id', 'procid-criteria-new-title');
+		title.setAttribute('id', 'procid-editCriteriaBox-title-label');
 		title.innerHTML = "Title";
 		divCriteria.appendChild(title);
 
 		var titleInput = document.createElement('input');
-		titleInput.setAttribute('id', 'procid-criteria-new_title_input');
+		titleInput.setAttribute('id', 'procid-editCriteriaBox-title-input');
 		titleInput.setAttribute('type', 'text');
+		titleInput.setAttribute('class', 'titleInput');
 		titleInput.setAttribute('name', 'labelInput');
-		titleInput.value = "Title of the new Criteria";
-		$("#procid-criteria-new_title_input").bind("keyup change", function() {
-			newCriterion.title = this.value;
-		});
+		titleInput.value = "Title...";
 		divCriteria.appendChild(titleInput);
 
 		var descriptionLabel = document.createElement('label');
-		descriptionLabel.setAttribute('id', 'procid-criteria-description-label');
+		descriptionLabel.setAttribute('id', 'procid-editCriteriaBox-description-label');
 		descriptionLabel.innerHTML = "Description";
 		divCriteria.appendChild(descriptionLabel);
 
 		var description = document.createElement('input');
-		description.setAttribute('id', 'procid-criteria-description');
+		description.setAttribute('id', 'procid-editCriteriaBox-description-input');
 		description.setAttribute('type', 'text');
 		description.setAttribute('name', 'description');
+		description.setAttribute('class', 'descriptionInput');
 		description.value = "Describe the criteria...";
-		$("#procid-criteria-description").bind("keyup change", function() {
-			newCriterion.description = this.value;
-		});
 		divCriteria.appendChild(description);
 
-
 		var saveButton = document.createElement('input');
-		saveButton.setAttribute('id', 'procid-criteria-save');
+		saveButton.setAttribute('id', 'procid-editCriteriaBox-save');
 		saveButton.setAttribute('type', 'button');
 		saveButton.value = "Save";
 		saveButton.onclick = function(e) {
@@ -583,7 +591,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 					console.log("success");
 				});
 			$.each(tempCriteria, function() {
-				criteria[i].label = $("#procid-criteria-lower" + this.id).val();
+				criteria[i].title = $("#procid-editCriteriaBox-title-input" + this.id).val();
 				$(".procid-svg-criteria-lower" + this.id).map(function() {
 					this.text(criteria[i].label);
 
@@ -594,10 +602,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				i++;
 			});
 
-			document.body.removeChild(document.getElementById("procid-overlay"));
-			document.body.removeChild(document.getElementById("procid-overlay-div"));
+			document.body.removeChild(document.getElementById("procid-editCriteriaBox"));
+			document.body.removeChild(document.getElementById("procid-editCriteriaBox-div"));
 		};
-		$("#procid-overlay-div").append(saveButton);
+		$("#procid-editCriteriaBox-div").append(saveButton);
 
 		//<input type="button" onclick="save()" value="Save" /><br/>
 
@@ -623,7 +631,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		link1.innerHTML = link;
 		link1.onclick = function(e) {
 			if (link === "(edit)") {
-				createOverlay();
+				createEditCriteriaBox();
 			} else if (link === "(add)") {
 				enableAddcomment();
 			}
@@ -951,7 +959,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		d3.selectAll(".selector").data(allCriteria).append("svg:text")
 	      	.attr("class", "procid-criteria-title")
-      		.attr("dx", "100")
+      		.attr("dx", function(d) {
+				var tempTitle = findCriteriaTitle(d.id);
+				var length = tempTitle.length*4;//visualLength(tempTitle);
+				return (x(6)-x(0))/2+x(0)-length/2;
+			})
 		.attr("dy", "20")
 		.text(function(d) {
 				return findCriteriaTitle(d.id);
@@ -1025,7 +1037,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			link1.setAttribute('href', "#");
 			link1.innerHTML = "add a new criteria";
 			link1.onclick = function(e) {
-				createOverlay();
+				createEditCriteriaBox();
 			};				
 		}
 
