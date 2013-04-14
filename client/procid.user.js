@@ -869,14 +869,79 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			return commentInfo;
 	}
 	
+	var createNewCommentBox = function(currentElement){
+		var divNewComment = document.createElement('div');
+		divNewComment.setAttribute('class', 'procid-new-comment');
+		currentElement.appendChild(divNewComment);
+	
+		var divNewCommentBox = document.createElement('div');
+		divNewCommentBox.setAttribute('class', 'procid-new-comment-box');
+		divNewComment.appendChild(divNewCommentBox);
+
+		var divNewCommentBoxInput = document.createElement('textarea');
+		divNewCommentBoxInput.setAttribute('class', 'procid-new-comment-textarea');
+		divNewCommentBox.appendChild(divNewCommentBoxInput);
+
+		var divNewCommentBoxSubmit = document.createElement('input');
+		divNewCommentBoxSubmit.setAttribute('class', 'submit');
+		divNewCommentBoxSubmit.setAttribute('type', 'submit');
+		divNewCommentBoxSubmit.setAttribute('value', 'Comment');
+		divNewCommentBoxSubmit.setAttribute('name', 'submit');
+		divNewCommentBoxSubmit.onclick = function(e) {
+				//TODO: save the comment
+
+				//close the comment Input box
+				currentElement.removeChild(divNewComment);
+			};
+		divNewCommentBox.appendChild(divNewCommentBoxSubmit);
+
+		var divArrow = document.createElement('div');
+		divArrow.setAttribute('class', 'arrow');
+		divNewComment.appendChild(divArrow);
+
+		var divShadow = document.createElement('div');
+		divShadow.setAttribute('class', 'shadow');
+		divNewComment.appendChild(divShadow);
+	}	
+
 	var createCriterionSelectors = function(){
 		var color = "lightgray";
 
-		//y function works for both plots
-		var x = d3.scale.quantize().domain([0, 8]).range([40, 60, 80, 100, 120, 140, 160, 180, 200]);
+		//x function
+		var x = d3.scale.quantize().domain([0, 6]).range([43, 70, 97, 124, 151, 178, 205]);
 
 		var mySvg = d3.selectAll('#procid-idea-criterion').append("svg:svg").attr("width", '260').attr("height", '50').attr("class", "selector").attr("viewBox", "0 0 260 50");
+
+		d3.selectAll(".selector").append("svg:defs").attr("class", "svgdefs");
+		d3.selectAll(".svgdefs").append("svg:filter")
+		.attr("id", "procid-circle-filter")
+    		.attr("x", "-20%")
+    		.attr("y", "-20%")
+    		.attr("width", "200%")
+    		.attr("height", "200%");	
 		
+		d3.selectAll("#procid-circle-filter").append("svg:feOffset")
+		.attr("dx", "1")
+    		.attr("dy", "2")
+    		.attr("in", "SourceAlpha")
+    		.attr("result", "offOut");
+
+		d3.selectAll("#procid-circle-filter").append("svg:feGaussianBlur")
+		.attr("result", "blurOut")
+    		.attr("in", "offOut")
+    		.attr("stdDeviation", "3");
+
+		// <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+		d3.selectAll("#procid-circle-filter").append("svg:feComponentTransfer").attr("class", "svgcomponentTransfer");
+		d3.selectAll(".svgcomponentTransfer").append("svg:feFuncA")		
+		.attr("type", "linear")
+    		.attr("slope", "4.2");
+
+		d3.selectAll("#procid-circle-filter").append("svg:feMerge").attr("class", "svgfemerge");
+		d3.selectAll(".svgfemerge").append("svg:feMergeNode")		
+		.attr("in", "SourceGraphic");
+
+
 		d3.selectAll(".selector").append("image")
     		.attr("xlink:href", ABSOLUTEPATH + "/images/slider.png")
     		.attr("width", "240")
@@ -891,51 +956,61 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		.text(function(d) {
 				return findCriteriaTitle(d.id);
 			});
+		
+		d3.selectAll(".selector").data(allCriteria).append("svg:line")
+	      	.attr("class", "procid-criteria-line")
+	      	.attr("id", function(d) {
+				var tempTitle = d.title.substr(1);
+				return "procid-cline-"+tempTitle+"-"+d.id;
+			})
+      		.attr("x1", "36")
+		.attr("y1", "30")
+		.attr("x2", "36")
+		.attr("y2", "30")
+		.attr("stroke", "#29abe2")
+		.attr("stroke-width", '3');
 
 		d3.selectAll(".selector").data(allCriteria).append("svg:circle")
 			.attr("class", "selectorCircle")
 			.attr("fill", "white")
 			.attr("stroke", color)
-			.attr("stroke-width", '3')
+			.attr("stroke-width", '.25')
 			.attr("style", "cursor: pointer")
+			.attr("filter", "url(#procid-circle-filter)")
 			.attr("cy", "30")
 			.attr("cx", function(d) {
 				return x(d.value);
 			}).attr("r", "8")
 			.on("mouseover", function() {
-				d3.select(this).style("fill-opacity", .7);
+				d3.select(this).style("fill-opacity", .9);
 			}).on("mouseout", function() {
 				d3.select(this).style("fill-opacity", 1);
 			}).call(d3.behavior.drag().on("dragstart", function(d) {
 				this.__origin__ = [x(d.value), 30];
-				//mySvg.select(".tooltiptext").remove();
-				//mySvg.append("svg:text").attr("class", "tooltiptext").text().attr("x", x(d.value)).attr("y", 30 + 10);
+				this.__originx = x(d.value);
 			}).on("drag", function(d) {
-				var cx = Math.min(200, Math.max(40, this.__origin__[0] += d3.event.dx));
-				//var cy = Math.min(50, Math.max(0, this.__origin__[1] += d3.event.dy));
-				cx = Math.floor(cx/10)*10;
 				var firstNum = x.range()[0];
-				var diff = x.range()[1] - firstNum;
-				var value = Math.floor((cx-firstNum)/diff);
+				var diff = x.range()[1] - firstNum;				
+				var cx = Math.min(x(6), Math.max(x(0), this.__origin__[0] += d3.event.dx));
+				cx = Math.floor((cx-x(0))/diff)*diff+x(0);
 				
+				var value = Math.floor((cx-firstNum)/diff);
 				//updating the value
-				d.value = value;//Math.floor(x.invert(cx));
+				d.value = value;
 				//TODO: save to database		
 		
-				d3.select(this).attr("cx", cx).attr("fill", function(d) {
-					return "blue";
-				});
+				d3.select(this).attr("cx", cx);//.attr("fill", "#29abe2");
+				var identifier="#procid-cline-"+d.title.substr(1)+"-"+d.id;
+				d3.select(identifier).attr("x2", cx);
 
-				//Tooltip next to the moving dot
-				//mySvg.select(".tooltiptext").text(d.value.toFixed(0)).attr("x", x(d.value));
-
-			}).on("dragend", function() {
-				//mySvg.select(".tooltiptext").remove();
-				delete this.__origin__;
+			}).on("dragend", function(d) {
+				//delete this.__origin__;
+				if(this.__originx != x(d.value))
+					createNewCommentBox(this.parentNode.parentNode);
 			}));
 		
 	}
-	
+
 	var createIdeaCriteria = function(divIdeaBlock, commentInfo) {
 		//criteris
 		var divCriteria = document.createElement('div');

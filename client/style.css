@@ -543,6 +543,95 @@ a.hide {
 	margin: 0px 5px 0px 0px;
 }*/
 
+.procid-new-comment-textarea {
+	background-color: white;
+	border: none;
+	border-color: Transparent; 
+	resize: none;
+	width: 100px;
+	height:20px;
+	/* easy rounded corners for modern browsers */
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 1px;
+}
+.procid-new-comment-textarea:focus{
+	outline: none;
+}
+
+.procid-new-comment {
+	position: relative;
+	width: 200px;
+	height: 70px;
+	margin: 0 auto;
+}
+            
+.procid-new-comment-box {
+	background: #fff;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+	border-radius: 5px;
+	position: relative;
+	z-index: 10;
+	width: 100%;
+	height: 100%;
+}
+            
+.procid-new-comment .arrow, .procid-new-comment .shadow {
+	width: 10px;
+	height: 10px;
+	background: #fff;
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	position: absolute;
+	top: -5px;
+	left: 20px;
+	margin: 0;
+	z-index: 11;
+}
+            
+.procid-new-comment .shadow {
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+	z-index: 9;
+}
+
+.procid-new-comment-box .submit {
+	background:#8dc53c;; /* Clear twitter bootstrap style. */
+	background-color:#8dc53c;
+	background: -webkit-gradient(linear, left top, left bottom, from(#9fd848), to(#96bc43));
+	background: -moz-linear-gradient(top,  #9fc848,  #96bc43);
+	border: 1px solid #ccc;
+	color: white;
+	display:block;
+	margin: 10px 5px 5px 5px;
+	font-size: 13px;
+	font-weight: normal;
+	line-height: 18px;
+	padding:4px 10px 4px;
+	text-align: center;
+	text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+	vertical-align: middle;
+	cursor: pointer;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 1px 2px rgba(0,0,0,0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 1px 2px rgba(0,0,0,0.05);
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.procid-new-comment-box .submit:hover {
+	background: #7cae38;
+	background: -webkit-gradient(linear, left top, left bottom, from(#7cae38), to(#73a134));
+	background: -moz-linear-gradient(top,  #7cae38,  #73a134);
+}
+.procid-new-comment-box .submit:active {
+	color: #a9c08c;
+	background: -webkit-gradient(linear, left top, left bottom, from(#4e7d0e), to(#7db72f));
+	background: -moz-linear-gradient(top,  #4e7d0e,  #7db72f);
+}
 #procid-overlay {
 	background-color: #000;
 	opacity: .7;
