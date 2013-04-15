@@ -15,6 +15,10 @@ class Issue
     return Comment.count(:issue_id=>id);
   end
 
+  def getNewCommentTitle
+    num = Comment.count(:issue_id=>id)+1;
+    return "#"+num.to_s;
+  end
   #Use helper methods to find potential participants
   def find_potential_participants
 
@@ -81,7 +85,6 @@ class Issue
     date2 = Time.now
     days = 0
     if(recency != 0 && !(recency.nil?))
-      puts "recency: " + recency.to_s
       date1 = DateTime.rfc3339(recency.to_s)
       days = distance_of_time_in_words(date1, date2)
       description.concat(", and last participated in a usability thread #{days} ago.")

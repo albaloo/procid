@@ -18,7 +18,7 @@ task :csv_participant_import => :environment do
 		numComments = values[4];		
 	end
 	part = Participant.first_or_create({:user_name =>values[0]},{:link=>values[1], :experience=>values[2], :first_name=>firstName, :last_name=>lastName, :usabilityComments => numComments, :usabilityPatches => numPatches})			 
-	puts "Finished pre-populating the db with usability participants"
   end
+  puts "Finished pre-populating the db with usability participants"
 
 end

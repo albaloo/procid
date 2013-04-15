@@ -25,13 +25,14 @@ class HomepageController < ApplicationController
 		
 		#We only need to process the comments that haven't been processed yet.
 		numPrevComments = currentIssue.find_num_previous_comments
-		index = 0;
-		if(numPrevComments < commentInfos.length)	
-			index = numPrevComments;
+		index = numPrevComments;
+		if(numPrevComments > commentInfos.length)	
+			index = commentInfos.length;
 		end
 		
 		commentInfos.from(index).each do |curr|	
 			currentParticipant = Participant.first_or_create({:user_name =>curr["author"]},{:link=>curr["authorLink"]})
+
 			currentComment = Comment.first_or_create(:link => curr["link"])
 			currentComment.attributes = {
 						:title => curr["title"],
@@ -68,10 +69,6 @@ class HomepageController < ApplicationController
 		return currentIssue.id	
 	end
 	
-	def find_conversations
-		#comments=
-	end
-
 	def prepareOutputFile(issueId)
 		comments_json=Array.new
 		issue = Issue.first(:id => issueId)

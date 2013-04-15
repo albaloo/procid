@@ -14,12 +14,16 @@ class Comment
   belongs_to :ideasource, 'Idea', :required => false
 
   # comment may have 1 idea properties if it's an idea
-  has 1, :idea, :required => false
+  #has 1, :idea, :required => false
+  belongs_to :idea, :required => false
 
   # comment may have n tags
   has n, :tags
 
   belongs_to :issue,:required=>false
-  belongs_to :idea,:required=>false
   belongs_to :criteria_status, :required=>false
+
+  def updateLink
+    link = link.concat(id.to_s)
+  end
 end

@@ -6,6 +6,9 @@ Backend::Application.routes.draw do
 	match "/findPotentialParticipants" => "invitepage#findPotentialParticipants"
 	match "/setIdeaStatus" => "ideapage#setIdeaStatus"
 	match "/addCriteria" => "ideapage#addCriteria"
+	match "/updateCriteriaStatus" => "ideapage#updateCriteriaStatus"
+	match "/editCriteria" => "ideapage#editCriteria"
+	match "/deleteCriteriaStatus" => "ideapage#deleteCriteria"
 
 
 

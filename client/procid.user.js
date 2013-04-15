@@ -451,12 +451,32 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			"commentInfos" : JSON.stringify(commentInfos)
 		}, function(data) {
 			$.each(data.issueComments, function(i, comment) {
-				commentInfos[i].tags = comment.tags;
-				commentInfos[i].tone = comment.tone;
-				commentInfos[i].comments = comment.comments;
-				//commentInfos[i].criteria = comment.criteria;
-				commentInfos[i].status = comment.status;
-				applyTags(commentInfos[i]);
+				if(i>=commentInfos.length){
+					var newComment = {
+						title : comment.title,
+						link : comment.link,
+						author : comment.author,
+						authorLink : comment.authorLink,
+						content : comment.content,
+						tags : comment.tags,
+						status : comment.status,
+						comments : comment.comments,
+						idea : "#1",
+						criteria : comment.criteria,
+						tone: comment.tone,
+						image : ""
+					};
+					commentInfos.push(newComment);
+					applyTags(newComment)
+				}
+				else{
+					commentInfos[i].tags = comment.tags;
+					commentInfos[i].tone = comment.tone;
+					commentInfos[i].comments = comment.comments;
+					//commentInfos[i].criteria = comment.criteria;
+					commentInfos[i].status = comment.status;
+					applyTags(commentInfos[i]);
+				}
 			});
 			criteria=data.criteria;
 		});
@@ -593,12 +613,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			$.each(tempCriteria, function() {
 				criteria[i].title = $("#procid-editCriteriaBox-title-input" + this.id).val();
 				$(".procid-svg-criteria-lower" + this.id).map(function() {
-					this.text(criteria[i].label);
+					this.text(criteria[i].title);
 
 				});
 
-				console.log("this.te" + $(".procid-svg-criteria-lower1")[0].text());
-				//$(".procid-svg-criteria-lower1")[1].text("Salam,");
 				i++;
 			});
 
@@ -877,9 +895,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			return commentInfo;
 	}
 	
-	var createNewCommentBox = function(currentElement){
+	var createNewCommentBox = function(currentElement, originalPosition, originalValue, criterion_track, circle){
 		var divNewComment = document.createElement('div');
 		divNewComment.setAttribute('class', 'procid-new-comment');
+//		divNewComment.setAttribute('top', position);
 		currentElement.appendChild(divNewComment);
 	
 		var divNewCommentBox = document.createElement('div');
@@ -888,6 +907,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		var divNewCommentBoxInput = document.createElement('textarea');
 		divNewCommentBoxInput.setAttribute('class', 'procid-new-comment-textarea');
+		divNewCommentBoxInput.setAttribute('placeholder', 'Explain the new criteria evaluation or press cancel...');
 		divNewCommentBox.appendChild(divNewCommentBoxInput);
 
 		var divNewCommentBoxSubmit = document.createElement('input');
@@ -897,11 +917,27 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		divNewCommentBoxSubmit.setAttribute('name', 'submit');
 		divNewCommentBoxSubmit.onclick = function(e) {
 				//TODO: save the comment
-
+				$.post(serverURL+"updateCriteriaStatus", {
+				"issueLink" : issue.link, "userName" : "webchick", "commentTitle" : criterion_track.title, "value" : criterion_track.value,"content" : divNewCommentBoxInput.value, "id" : criterion_track.id}, function() {
+					console.log("success");
+				});
 				//close the comment Input box
 				currentElement.removeChild(divNewComment);
 			};
 		divNewCommentBox.appendChild(divNewCommentBoxSubmit);
+
+		var divNewCommentBoxCancel = document.createElement('input');
+		divNewCommentBoxCancel.setAttribute('class', 'cancel');
+		divNewCommentBoxCancel.setAttribute('type', 'submit');
+		divNewCommentBoxCancel.setAttribute('value', 'Cancel');
+		divNewCommentBoxCancel.setAttribute('name', 'cancel');
+		divNewCommentBoxCancel.onclick = function(e) {
+				//go back to the original Location
+				updateCriteriaCircleLocation(criterion_track, originalValue, originalPosition, circle);
+				//close the comment Input box
+				currentElement.removeChild(divNewComment);
+			};
+		divNewCommentBox.appendChild(divNewCommentBoxCancel);
 
 		var divArrow = document.createElement('div');
 		divArrow.setAttribute('class', 'arrow');
@@ -910,7 +946,22 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		var divShadow = document.createElement('div');
 		divShadow.setAttribute('class', 'shadow');
 		divNewComment.appendChild(divShadow);
+
+		return divNewComment;
 	}	
+
+	var removeCommentBox = function(parent, currentCommentBox){
+		parent.removeChild(currentCommentBox);
+	}
+
+	var updateCriteriaCircleLocation = function(d, value, cx, circle){
+		//updating the value
+		d.value = value;		
+		d3.select(circle).attr("cx", cx);//.attr("fill", "#29abe2");
+		var identifier="#procid-cline-"+d.title.substr(1)+"-"+d.id;
+		d3.select(identifier).attr("x2", cx);
+
+	}
 
 	var createCriterionSelectors = function(){
 		var color = "lightgray";
@@ -1000,6 +1051,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			}).call(d3.behavior.drag().on("dragstart", function(d) {
 				this.__origin__ = [x(d.value), 30];
 				this.__originx = x(d.value);
+				this.__originValue = d.value;
+				if(this.commentBox != null)
+					removeCommentBox(this.parentNode.parentNode, this.commentBox);
 			}).on("drag", function(d) {
 				var firstNum = x.range()[0];
 				var diff = x.range()[1] - firstNum;				
@@ -1007,18 +1061,20 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				cx = Math.floor((cx-x(0))/diff)*diff+x(0);
 				
 				var value = Math.floor((cx-firstNum)/diff);
-				//updating the value
-				d.value = value;
-				//TODO: save to database		
-		
-				d3.select(this).attr("cx", cx);//.attr("fill", "#29abe2");
-				var identifier="#procid-cline-"+d.title.substr(1)+"-"+d.id;
-				d3.select(identifier).attr("x2", cx);
 
+				updateCriteriaCircleLocation(d, value, cx, this);
+				
 			}).on("dragend", function(d) {
 				//delete this.__origin__;
-				if(this.__originx != x(d.value))
-					createNewCommentBox(this.parentNode.parentNode);
+				if(this.__originx != x(d.value)){
+					this.commentBox = createNewCommentBox(this.parentNode.parentNode, this.__originx, this.__originValue, d, this);
+					/*$.post(serverURL+"updateCriteriaStatus", {
+				"issueLink" : issue.link, "userName" : "webchick", "commentTitle" : d.title, 
+						"value" : d.value, "id" : d.id}, function() {
+											console.log("success");
+											});*/
+			
+				}
 			}));
 		
 	}

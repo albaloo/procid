@@ -9,8 +9,7 @@ task :csv_issue_import => :environment do
 		creator = Participant.first_or_create({:user_name =>"Anonymous"});
 	end			 
 	Issue.first_or_create({:link => values[1]},{:status =>values[12],:participant=>creator, :title => values[15], :created_at => values[2]})
-	puts "Finished pre-populating the db with usability issues"
   end
-
+  puts "Finished pre-populating the db with usability issues."
 end
 
