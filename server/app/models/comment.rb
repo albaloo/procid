@@ -7,6 +7,7 @@ class Comment
   property :link, String,:length=>500, :required => true
   property :content,String,:length=>60000
   property :tone,String
+  property :commented_at, DateTime
 
   belongs_to :participant
 

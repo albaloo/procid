@@ -20,7 +20,25 @@ class Issue
     return "#"+num.to_s;
   end
   #Use helper methods to find potential participants
+
+  def insert_current_participant_issue_relations
+    issue = Issue.first({:id => id})
+    comments = Comment.all({:issue_id => id})			 
+    comments.each do |comment|
+      currentParticipant = Participant.first(:id=>comment.participant.id);
+      currentNet = Network.first_or_create({:participant => currentParticipant, :issue => issue})
+      currentNet.attributes = {
+			:commented_at => comment.commented_at
+      }
+      currentNet.save
+    end
+  end
+
   def find_potential_participants
+
+    if(Network.first(:issue_id=>id).nil?)
+      insert_current_participant_issue_relations
+    end
 
     potentials = Array.new
     potentials.concat(find_experienced_potential_participants)
@@ -170,7 +188,31 @@ class Issue
     return potentials#.sample(10)
   end
 
-  
+
+ def find_consensus_potential_participants_Dmapper
+    adapter = DataMapper.repository(:default).adapter
+    issueid = Issue.first(:link => link).id
+#    res = Network.all(:fields => [:participant_id], :conditions=>[Network.issue.status.like => "closed%", Network.participant.], :order => {}) + Network.all(Network.issue.status.like => "fix%");
+    res = adapter.select("SELECT t1.participant_id, COUNT(t2.status) AS cb FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY cb DESC;")
+    indx = 0
+    potentials = Array.new
+    res.each do |row|
+      currentParticipant = Participant.first(:id=>row[0]);
+
+      currentPInfo=Hash.new
+      currentPInfo["author"]=currentParticipant.user_name
+      currentPInfo["authorLink"]=currentParticipant.link
+      recency = find_participant_recency(row[0])
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], recency)#Time.now)
+      
+      potentials.push currentPInfo
+      indx = indx + 1
+      break if indx == 20
+    end			
+
+    return potentials#.sample(10)
+  end  
+
 
   #randomly selects 10 participants between 100 who have participated in threads that reached consensus
   def find_consensus_potential_participants

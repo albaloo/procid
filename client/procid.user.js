@@ -245,10 +245,14 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			size : '40',
 			placeholder : 'Search...',
 		}).appendTo("#" + name);
-
 	}
+
+	var removeSearchPanel = function(name, parent) {
+		$("#" + parent).remove("#" + name);
+	}
+
 	var createLense = function(name, parent, tooltipText) {
-		//Must read
+		//Lenses
 		$('<li />').attr({
 			id : "procid-" + name,
 		}).appendTo("#" + parent);
@@ -257,8 +261,31 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			id : 'procid-' + name + '-link',
 			href : '#',
 			rel : 'tooltip',
-			title : tooltipText
-		}).click(function highlightComments(evt) {
+			title : tooltipText, 
+			class : 'unselected'
+		})/*.hover(function highlightLensIcon(evt) {
+			$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-2.png')
+		})*/.appendTo("#procid-" + name);
+
+			console.log("here it goes, name: " + name);
+
+		if(name == "search")
+			$("#procid-"+name+"-link").click(function addthePanel(evt) {
+				if($("#procid-"+name+"-link").hasClass('unselected')){
+					//addSearchPanel('procid-search', "procid-left-panel-body");
+					$("#procid-"+name+"-link").attr('class', 'selected');
+					$("#procid-search").css("display", "block");
+					console.log("here it goes");
+				}
+				else{
+					//removeSearchPanel('procid-search', "procid-left-panel-body");
+					$("#procid-"+name+"-link").attr('class', 'unselected');
+					console.log("here it goes-remove");
+					$("#procid-search").css("display", "none");
+				}
+		});
+		else
+			$("#procid-"+name+"-link").click(function highlightComments(evt) {
 			if ($("div[id='procid-comment-" + name + "'] a").hasClass('unselected')) {
 				$("div[id='procid-comment-" + name + "'] a").attr('class', 'selected');
 				$("div[id='procid-comment-" + name + "'] img").attr('class', 'image-selected');
@@ -271,9 +298,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			}
 			return true;
 
-		})/*.hover(function highlightLensIcon(evt) {
-			$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-2.png')
-		})*/.appendTo("#procid-" + name);
+		});
 
 		$('<img />').attr({
 			id : 'procid-' + name + '-image',
@@ -334,6 +359,10 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				return "#";
 		});
 
+		var array_dateTimes = $("#comments div[class='submitted'] em").map(function(){
+			return $(this).text();			
+		});
+
 		var array_contents = $("div[class='content'] div[class='clear-block']").map(function() {
 			var contents = $(this).children("p");
 			var returnValue = "";
@@ -388,7 +417,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				idea : "#1",
 				criteria : [],
 				tone: "",
-				image : array_images[i]
+				image : array_images[i],
+				commented_at: array_dateTimes[i]
 			};
 			commentInfos.push(comment);
 		}
@@ -426,7 +456,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	}
 	var createHomePageBody = function() {
 		//Procid Home Body
-		addSearchPanel('procid-search', "procid-left-panel-body");
 
 		var lenses = document.createElement('ul');
 		lenses.setAttribute('id', 'procid-lenses');
@@ -437,7 +466,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		createLense('conversation', 'procid-lenses', 'View Conversation Comments');
 		createLense('expert', 'procid-lenses', 'View Comments Posted by Experts');
 		createLense('patch', 'procid-lenses', 'View Patches');
+		createLense('search', 'procid-lenses', 'Search');
+		$("#procid-search-link").css("border-image", "url("+ ABSOLUTEPATH +"/images/icon-border-left.png) 2 5 round");
 
+		addSearchPanel('procid-search', "procid-left-panel-body");
+//		$("#procid-search").css("display", "none");
 		initializeCommentInfo();
 		initializeIssueInfo();
 		
@@ -464,7 +497,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 						idea : "#1",
 						criteria : comment.criteria,
 						tone: comment.tone,
-						image : ""
+						image : "",
+						commented_at: comment.commented_at
 					};
 					commentInfos.push(newComment);
 					applyTags(newComment)

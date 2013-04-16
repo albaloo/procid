@@ -38,6 +38,7 @@ class HomepageController < ApplicationController
 						:title => curr["title"],
 						:link => curr["link"],
 						:content => curr["content"],
+						:commented_at => curr["commented_at"],
 						:participant => currentParticipant,
 						:issue=>currentIssue
 						}
@@ -91,6 +92,7 @@ class HomepageController < ApplicationController
 			curr_json["idea"]="#1"
 			curr_json["tone"]="positive"
 			curr_json["criteria"]=Array.new
+			curr_json["commented_at"]=comments[count].commented_at
 			comments_json[count]=curr_json
 			count=count+1
 		end
