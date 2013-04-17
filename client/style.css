@@ -147,7 +147,8 @@
 
 .searchForm input[type="text"]:focus {
 	background: #f8f8f8;
-	width: 200px;
+	/*width: 200px;*/
+	outline:none;
 }
 
 #procid-lenses {

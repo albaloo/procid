@@ -11,32 +11,20 @@
 // @include        https://*.drupal.org/*
 // ==/UserScript==
 
-// a function that loads jQuery and calls a callback function when jQuery has finished loading
+// a function that loads head.js which then loads jQuery and d3
 function addJQuery(callback) {
 	//Jquery Script
 	var script = document.createElement("script");
-	//script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js");
 	script.setAttribute("src", "//headjs.com/media/libs/headjs/0.99/head.min.js");
 	script.addEventListener('load', function() {
 		var script = document.createElement("script");
-		//script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
 		script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
 		var body = document.getElementsByTagName('head')[0];
 		body.appendChild(script);
 	}, false);
 
-	//D3 script
-	/*var scriptd3 = document.createElement("script");
-	scriptd3.setAttribute("src", "//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js");
-	scriptd3.addEventListener('load', function() {
-		var scriptd3 = document.createElement("script");
-		var body = document.getElementsByTagName('head')[0];
-		body.appendChild(scriptd3);
-	}, false);*/
-
 	var body1 = document.getElementsByTagName('head')[0];
 	body1.appendChild(script);
-	//body1.appendChild(scriptd3);
 };
 	
 
@@ -47,7 +35,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	console.log("begin");
 	var ABSOLUTEPATH = 'http://raw.github.com/albaloo/procid/master/client';
 	var CSSSERVERPATH = 'http://web.engr.illinois.edu/~rzilouc2/procid';
-	//'http://web.engr.illinois.edu/~rzilouc2/procid';
 	var serverURL='http://0.0.0.0:3000/';
 	//var serverURL='http://protected-dawn-3784.herokuapp.com/';	
 	var commentInfos = [];
@@ -65,12 +52,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	if (!window.d3) { 
 		loadScript("//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"); 
 		}
-
-	var visualLength = function(inputString){
-		var ruler = $("#procid-ruler");
-		ruler.innerHTML = inputString;
-		return ruler.offsetWidth;
-	}
 
 	var addCSSToHeader = function() {
 		var header = document.getElementsByTagName('head')[0];
@@ -99,7 +80,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		return leftPanel;
 	}
-	//StatusVar
+ 
+	//StatusVar used for changing pages
 	var createStatusVar = function() {
 		var statusVar = document.createElement('div');
 		statusVar.setAttribute('id', 'procid-status-var');
@@ -107,12 +89,15 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$('#footer').append(statusVar);
 		$('#procid-status-var').toggle(false);
 	}
+
 	var getStatusVar = function() {
 		return $('#procid-status-var').text();
 	}
+
 	var setStatusVar = function(status) {
 		$('#procid-status-var').text(status);
 	}
+
 	var changePage = function(destination) {
 		var map = {
 			home : ['procid-left-panel-body', 'procid-page-wrapper'],
@@ -129,10 +114,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$.each(destionationDivIds, function() {
 			$("#" + this).toggle();
 		});
-
 		setStatusVar(destination);
-
 	}
+
 	var createProcidHeader = function() {
 		//Ruler
 		$('<span />').attr({
@@ -231,20 +215,50 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		$("#procid-menus li").css("border-image", "url("+ ABSOLUTEPATH +"/images/icon-border-left.png) 2 5 round");
 	}
+
 	var addSearchPanel = function(name, parent) {
-		$('<form />').attr({
+		$('<div />').attr({
 			id : name+"-panel",
 			class : 'searchForm',
-			method : 'get',
-			action : '/search',
+			//method : 'get',
+			//action : '',
 		}).appendTo("#" + parent);
 
 		$('<input type="text" />').attr({
 			name : 'q',
 			class : 'searchFormInput',
+			id : name+"-input-form",
 			size : '40',
 			placeholder : 'Search...',
 		}).appendTo("#" + name+"-panel");
+
+		if(name == "procid-search"){
+			//Search comments
+			$("#" + name + "-input-form").keyup(function() {
+				$("div[id='procid-comment'] a").map(function() {
+					var value = $("#" + name + "-input-form").val().toLowerCase();
+					var currentText = $(this).text().toLowerCase();
+					console.log("currentText" + currentText) ;
+					if(currentText.indexOf(value) === -1)
+						$(this).parent().css("display","none");
+					else
+						$(this).parent().css("display","block");
+				});
+			});
+		}else{
+			//Search potential Members
+			$("#" + name + "-input-form").keyup(function() {
+				$("div[id='procid-invite-block'] div[id='procid-author-name']").map(function() {
+					var value = $("#" + name + "-input-form").val().toLowerCase();
+					var currentText = $(this).text().toLowerCase();
+					console.log("currentText" + currentText) ;
+					if(currentText.indexOf(value) === -1)
+						$(this).parent().css("display","none");
+					else
+						$(this).parent().css("display","block");
+				});
+			});		
+		}
 	}
 
 	var removeSearchPanel = function(name, parent) {
@@ -252,6 +266,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	}
 
 	var createLense = function(name, parent, tooltipText) {
+	//TODO: use CSS sprite
 		//Lenses
 		$('<li />').attr({
 			id : "procid-" + name,
@@ -270,14 +285,14 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		if(name == "search")
 			$("#procid-"+name+"-link").click(function addthePanel(evt) {
 				if($("#procid-"+name+"-link").hasClass('unselected')){
-					//addSearchPanel('procid-search-panel', "procid-left-panel-body");
 					$("#procid-"+name+"-link").attr('class', 'selected');
 					$("#procid-search-panel").css("display", "block");
+					$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-3.png')
 				}
 				else{
-					//removeSearchPanel('procid-search', "procid-left-panel-body");
 					$("#procid-"+name+"-link").attr('class', 'unselected');
 					$("#procid-search-panel").css("display", "none");
+					$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-1.png')
 				}
 		});
 		else
@@ -330,24 +345,23 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
   
 	}
 	var initializeCommentInfo = function() {
-		//CommentTitle: <h3 class="comment-title"><a href="/node/331893#comment-1098877" class="active">#1</a></h3>
 		var array_title = $("h3[class='comment-title']").map(function() {
 			return $(this).text();
 		});
+
 		var array_links = $("h3[class='comment-title'] a").map(function() {
 			return $(this).attr('href');
 		});
-		//CommentAuthor: <div class="submitted">Posted by <a href="/user/24967" title="View user profile.">webchick</a> on <em>November 8, 2008 at 8:20pm</em></div>
+
 		var array_author = $("#comments div[class='submitted']").map(function() {
 			var authors=$(this).find("a");
 			if(authors.length > 0)
 				return $(this).find("a").text();
 			else
 				return "Anonymous";
-				//return $(this).text();
 		});
+
 		var array_author_hrefs = $("#comments div[class='submitted']").map(function() {
-			//return $(this).attr('href');
 			var authors=$(this).find("a");
 			if(authors.length > 0)
 				return $(this).find("a").attr("href");
@@ -1039,7 +1053,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	      	.attr("class", "procid-criteria-title")
       		.attr("dx", function(d) {
 				var tempTitle = findCriteriaTitle(d.id);
-				var length = tempTitle.length*4;//visualLength(tempTitle);
+				var length = tempTitle.length*4;
 				return (x(6)-x(0))/2+x(0)-length/2;
 			})
 		.attr("dy", "20")
