@@ -30,39 +30,26 @@ class Comment
     link = link.concat(id.to_s)
   end
 
-  def getSummary
-    currentSummary = " commented."#summary
-    #if(summary.nil?)
-  
-      if(!(ideasource.nil?))
-        currentSummery = " proposed an idea."
-      elsif(patch)
-        currentSummery = " submitted a patch."
-      elsif(!(idea.nil?))
-        currentSummery = " commented on" + idea.comment.participant.user_name
-   #     currentSummery = currentSummery + " idea."
-      else
-        currentSummery = " commented."
-      end
-    #end
-    return currentSummary
-  end
-
-
   def updateSummary
-    currentSummary = summary
-    if(summary.nil?)
-      currentSummery = " commented."
-      if(!(ideasource.nil?))
-        currentSummery = " proposed an idea."
-      elsif(patch)
-        currentSummery = " submitted a patch."
-      elsif(!(idea.nil?))
-        currentSummery = " commented on" + idea.comment.participant.user_name
-        currentSummery = currentSummery + " idea."
+    Rails.logger = Logger.new("#{Rails.root}/roziank.txt")
+
+    if (summary.nil? || summary.empty?)
+      summary = " commented."
+      Rails.logger.debug "Roshanak ends"
+      if not (ideasource.nil?)
+        summary = " proposed an idea."
+      elsif patch
+        summary = " submitted a patch."
+      elsif not (idea.nil?) then
+        summary = " commented on " + idea.comment.participant.user_name
+	summary.concat(" idea")
+      else
+        summary = " commented."
       end
-      self.update(:summary => currentSummary)
+	self.update(:summary => summary)
     end
+    Rails.logger.debug "Summary doroste:#{summary}"
+    return summary
   end
 
 end
