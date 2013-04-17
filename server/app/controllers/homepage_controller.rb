@@ -76,6 +76,9 @@ class HomepageController < ApplicationController
 		comments=Comment.all(:issue => issue)
 		count=0
 		comments.each do |curr|
+			curSummary= comments[count].getSummary
+			comments[count].attributes = {:summary => curSummary}
+			comments[count].save
 			curr_json=Hash.new
 			curr_json["title"]=comments[count].title
 			curr_json["link"]=comments[count].link
@@ -93,6 +96,12 @@ class HomepageController < ApplicationController
 			curr_json["tone"]="positive"
 			curr_json["criteria"]=Array.new
 			curr_json["commented_at"]=comments[count].commented_at
+			curr_json["summary"]=comments[count].getSummary
+		tmp_file = "#{Rails.root}/rozi.txt"
+		File.open(tmp_file, 'wb') do |f|
+			f.write comments[count].getSummary
+		end
+
 			comments_json[count]=curr_json
 			count=count+1
 		end

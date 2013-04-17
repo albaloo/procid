@@ -8,6 +8,8 @@ class Comment
   property :content,String,:length=>60000
   property :tone,String
   property :commented_at, DateTime
+  property :summary, String,:length=>500
+  property :patch, Boolean, :default => false
 
   belongs_to :participant
 
@@ -27,4 +29,40 @@ class Comment
   def updateLink
     link = link.concat(id.to_s)
   end
+
+  def getSummary
+    currentSummary = " commented."#summary
+    #if(summary.nil?)
+  
+      if(!(ideasource.nil?))
+        currentSummery = " proposed an idea."
+      elsif(patch)
+        currentSummery = " submitted a patch."
+      elsif(!(idea.nil?))
+        currentSummery = " commented on" + idea.comment.participant.user_name
+   #     currentSummery = currentSummery + " idea."
+      else
+        currentSummery = " commented."
+      end
+    #end
+    return currentSummary
+  end
+
+
+  def updateSummary
+    currentSummary = summary
+    if(summary.nil?)
+      currentSummery = " commented."
+      if(!(ideasource.nil?))
+        currentSummery = " proposed an idea."
+      elsif(patch)
+        currentSummery = " submitted a patch."
+      elsif(!(idea.nil?))
+        currentSummery = " commented on" + idea.comment.participant.user_name
+        currentSummery = currentSummery + " idea."
+      end
+      self.update(:summary => currentSummary)
+    end
+  end
+
 end

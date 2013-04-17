@@ -233,7 +233,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	}
 	var addSearchPanel = function(name, parent) {
 		$('<form />').attr({
-			id : name,
+			id : name+"-panel",
 			class : 'searchForm',
 			method : 'get',
 			action : '/search',
@@ -244,11 +244,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			class : 'searchFormInput',
 			size : '40',
 			placeholder : 'Search...',
-		}).appendTo("#" + name);
+		}).appendTo("#" + name+"-panel");
 	}
 
 	var removeSearchPanel = function(name, parent) {
-		$("#" + parent).remove("#" + name);
+		$("#" + parent).remove("#" + name+"-panel");
 	}
 
 	var createLense = function(name, parent, tooltipText) {
@@ -267,21 +267,17 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			$("img[id='procid-"+name+"-image']").attr('src', ABSOLUTEPATH + '/images/' + name + '-2.png')
 		})*/.appendTo("#procid-" + name);
 
-			console.log("here it goes, name: " + name);
-
 		if(name == "search")
 			$("#procid-"+name+"-link").click(function addthePanel(evt) {
 				if($("#procid-"+name+"-link").hasClass('unselected')){
-					//addSearchPanel('procid-search', "procid-left-panel-body");
+					//addSearchPanel('procid-search-panel', "procid-left-panel-body");
 					$("#procid-"+name+"-link").attr('class', 'selected');
-					$("#procid-search").css("display", "block");
-					console.log("here it goes");
+					$("#procid-search-panel").css("display", "block");
 				}
 				else{
 					//removeSearchPanel('procid-search', "procid-left-panel-body");
 					$("#procid-"+name+"-link").attr('class', 'unselected');
-					console.log("here it goes-remove");
-					$("#procid-search").css("display", "none");
+					$("#procid-search-panel").css("display", "none");
 				}
 		});
 		else
@@ -418,7 +414,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				criteria : [],
 				tone: "",
 				image : array_images[i],
-				commented_at: array_dateTimes[i]
+				commented_at: array_dateTimes[i],
+				summary: ""
 			};
 			commentInfos.push(comment);
 		}
@@ -426,7 +423,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	}
 	
 	var applyTags = function(commentInfo) {
-
 		var div1 = document.createElement('div');
 		div1.setAttribute('id', 'procid-comment');
 		var divinner = div1;
@@ -450,13 +446,12 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			class : 'unselected',
 			rel : 'tooltip',
 			title : 'see comment'
-		}).text(commentInfo.title + "\t" + commentInfo.author).appendTo(divinner);
+		}).text(commentInfo.title + "\t" + commentInfo.author + commentInfo.summary).appendTo(divinner);
 
 		$("#procid-left-panel-body").append(div1);
 	}
 	var createHomePageBody = function() {
 		//Procid Home Body
-
 		var lenses = document.createElement('ul');
 		lenses.setAttribute('id', 'procid-lenses');
 		$("#procid-left-panel-body").append(lenses);
@@ -470,7 +465,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$("#procid-search-link").css("border-image", "url("+ ABSOLUTEPATH +"/images/icon-border-left.png) 2 5 round");
 
 		addSearchPanel('procid-search', "procid-left-panel-body");
-//		$("#procid-search").css("display", "none");
+		$("#procid-search-panel").css("display", "none");
 		initializeCommentInfo();
 		initializeIssueInfo();
 		
@@ -498,7 +493,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 						criteria : comment.criteria,
 						tone: comment.tone,
 						image : "",
-						commented_at: comment.commented_at
+						commented_at: comment.commented_at,
+						summary: comment.summary
 					};
 					commentInfos.push(newComment);
 					applyTags(newComment)
@@ -509,6 +505,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 					commentInfos[i].comments = comment.comments;
 					//commentInfos[i].criteria = comment.criteria;
 					commentInfos[i].status = comment.status;
+					commentInfos[i].summary = comment.summary;
 					applyTags(commentInfos[i]);
 				}
 			});
@@ -658,10 +655,8 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 			document.body.removeChild(document.getElementById("procid-editCriteriaBox-div"));
 		};
 		$("#procid-editCriteriaBox-div").append(saveButton);
-
-		//<input type="button" onclick="save()" value="Save" /><br/>
-
 	}
+
 	var enableAddcomment = function() {
 		if ($("div[id='procid-idea-comments'] a").hasClass('show')) {
 			$("div[id='procid-idea-comments'] a").attr('class', 'hide');
@@ -846,7 +841,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		divCommentColumns.appendChild(divConsColumn);
 		
 		var srcPath = ABSOLUTEPATH + "/images/comment.png";
-		//console.log("here: " + commentInfo.comments);
+
 		$.each(commentInfo.comments, function() {
 			var string = "#"+this;
 			var comment = findComment(string);
@@ -950,7 +945,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		divNewCommentBoxSubmit.setAttribute('value', 'Comment');
 		divNewCommentBoxSubmit.setAttribute('name', 'submit');
 		divNewCommentBoxSubmit.onclick = function(e) {
-				//TODO: save the comment
 				$.post(serverURL+"updateCriteriaStatus", {
 				"issueLink" : issue.link, "userName" : "webchick", "commentTitle" : criterion_track.title, "value" : criterion_track.value,"content" : divNewCommentBoxInput.value, "id" : criterion_track.id}, function() {
 					console.log("success");
@@ -991,10 +985,9 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	var updateCriteriaCircleLocation = function(d, value, cx, circle){
 		//updating the value
 		d.value = value;		
-		d3.select(circle).attr("cx", cx);//.attr("fill", "#29abe2");
+		d3.select(circle).attr("cx", cx);
 		var identifier="#procid-cline-"+d.title.substr(1)+"-"+d.id;
 		d3.select(identifier).attr("x2", cx);
-
 	}
 
 	var createCriterionSelectors = function(){
@@ -1179,6 +1172,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		createCriterionSelectors();
 
 	}
+
 	var findPeopletoInvite = function() {
 		var suggestedMembers = [];
 		$.post(serverURL+"findPotentialParticipants", {
@@ -1191,11 +1185,76 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 		return suggestedMembers;
 	}
+
+	var createInviteLense = function(name, parent, tooltipText, imagePath){
+
+		$('<a />').attr({
+			id : 'procid-invite-' + name + '-link',
+			href : '#',
+			rel : 'tooltip',
+			title : tooltipText, 
+			class : 'unselected'
+		}).appendTo("#" + parent);
+
+		if(name == "search")
+			$("#procid-invite-"+name+"-link").click(function addthePanel(evt) {
+				if($("#procid-invite-"+name+"-link").hasClass('unselected')){
+					$("#procid-invite-"+name+"-link").attr('class', 'selected');
+					$("#procid-invite-search-panel").css("display", "block");
+					$("img[id='procid-invite-"+name+"-image']").attr('src', imagePath + '-3.png')
+				}
+				else{
+					$("#procid-invite-"+name+"-link").attr('class', 'unselected');
+					$("#procid-invite-search-panel").css("display", "none");
+					$("img[id='procid-invite-"+name+"-image']").attr('src', imagePath + '-1.png')
+				}
+		});
+		else
+			$("#procid-invite-"+name+"-link").click(function highlightMembers(evt) {
+			if ($("#procid-author-name").hasClass('unselected')) {
+				$("#procid-author-name").attr('class', 'selected');
+				//$("div[id='procid-comment-" + name + "'] img").attr('class', 'image-selected');
+				//$("div[id='procid-comment-" + name + "'] img").attr('src', ABSOLUTEPATH + '/images/' + name + '-tiny.png');
+				$("img[id='procid-invite-"+name+"-image']").attr('src', imagePath + '-3.png')
+			} else {
+				$("#procid-author-name").attr('class', 'unselected');
+				//$("div[id='procid-comment-" + name + "'] img").attr('class', 'image-unselected');
+				$("img[id='procid-invite-"+name+"-image']").attr('src', imagePath + '-1.png')
+			}
+			return true;
+
+		});
+
+		$('<img />').attr({
+			id : 'procid-invite-' + name + '-image',
+			src : imagePath + '-1.png',
+		}).appendTo("#procid-invite-" + name + '-link');
+
+	}
 	var createInvitePageBody = function() {
 		//Procid Invite Page Body
-		//Search
-		addSearchPanel('procid-search-invite', 'procid-invite-page-wrapper');
 
+		var divInviteTitle = document.createElement('h2');
+		divInviteTitle.setAttribute('id', 'procid-invite-title');
+		divInviteTitle.innerHTML = "Invite Users to Your Discussion";
+		$("#procid-invite-page-wrapper").append(divInviteTitle);
+		
+		//invite page filter panel
+		var divInviteFilter = document.createElement('div');
+		divInviteFilter.setAttribute('id', 'procid-invite-filter');
+		$("#procid-invite-page-wrapper").append(divInviteFilter);
+
+		createInviteLense("experience", "procid-invite-filter", "View experienced participants", ABSOLUTEPATH + "/images/experience");
+		createInviteLense("patches", "procid-invite-filter", "View participants who submitted patches", ABSOLUTEPATH + "/images/patches");
+		createInviteLense("recency", "procid-invite-filter", "View recent participants", ABSOLUTEPATH + "/images/recency");
+		createInviteLense("connections", "procid-invite-filter", "View participants with most connections", ABSOLUTEPATH + "/images/connections");
+		createInviteLense("search", "procid-invite-filter", "Search Participants", ABSOLUTEPATH + "/images/search-invite");
+		
+		//Search
+		addSearchPanel('procid-invite-search', 'procid-invite-page-wrapper');
+		$("#procid-invite-search-panel").css("display", "none");
+
+		//List potential members to invite
 		var suggestedPeaple = findPeopletoInvite();
 		for (var i = 0; i < suggestedPeaple.length; i++) {
 
@@ -1204,28 +1263,30 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 			var divAuthorName = document.createElement('div');
 			divAuthorName.setAttribute('id', 'procid-author-name');
-			divAuthorName.setAttribute('class', 'procid-invite-block-cell');
+			divAuthorName.setAttribute('class', 'unselected');
 			divAuthorName.textContent = suggestedPeaple[i].author;
 			
 			divInviteBlock.appendChild(divAuthorName);
 
 			var divAuthorDescription = document.createElement('div');
 			divAuthorDescription.setAttribute('id', 'procid-author-description');
-			divAuthorDescription.setAttribute('class', 'procid-invite-block-cell');
 			divAuthorDescription.textContent = suggestedPeaple[i].description;
 			divInviteBlock.appendChild(divAuthorDescription);
 
 			var divInviteLink = document.createElement('a');
 			divInviteLink.setAttribute('id', 'procid-invite-invitationlink');
-			divInviteLink.setAttribute('class', 'procid-invite-block-cell');
 			divInviteLink.setAttribute('href', '#');
 			divInviteLink.setAttribute('rel', 'tooltip')
 			divInviteLink.setAttribute('title', 'Invite this person');
-			divInviteLink.innerHTML = "Invite";
 			divInviteLink.onclick = function invitePerson(evt) {
-				//alert('do something cool');
+				//TODO: invite this person
 				return true;
 			};
+
+			var divInviteLinkImage = document.createElement('img');
+			divInviteLinkImage.setAttribute('id', 'procid-invite-invitationlink-image');
+			divInviteLinkImage.setAttribute('src', ABSOLUTEPATH + "/images/invite.png");
+			divInviteLink.appendChild(divInviteLinkImage);
 
 			divInviteBlock.appendChild(divInviteLink);
 			$("#procid-invite-page-wrapper").append(divInviteBlock);
@@ -1271,14 +1332,6 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 
 	//Procid Header
 	createProcidHeader();
-
-	//var hr = document.createElement('hr');
-	//hr.style.background = "url(" + ABSOLUTEPATH + "/images/sidebar_divider.png) repeat-x";
-	//$("#procid-left-panel-header").append(hr);
-
-	/*createCriterion("Simple", "Complex", "1", "The text should be simple.");
-	createCriterion("Explains", "Doesn't Explain", "2", "The text should be explanatory.");
-	createCriterion("Less", "More", "3", "We need less information.");*/
 
 	createHomePageBody();
 	createIdeaPageBody();
