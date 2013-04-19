@@ -43,8 +43,8 @@ class Issue
     potentials = Array.new
     potentials.concat(find_experienced_potential_participants)
     potentials.concat(find_patchsubmitter_potential_participants)
-    potentials.concat(find_consensus_potential_participants)
-    potentials.concat(find_recent_potential_participants)
+    potentials.concat(find_consensus_potential_participants_Dmapper)
+    potentials.concat(find_recent_potential_participants_Dmapper)
 
     return potentials.sample(30)
   end
@@ -366,8 +366,45 @@ class Issue
   		end
   	end
   end
+  def find_ideas(start,numCheck,minWithImg,minNoImg)
+  	comments = Comment.all(:issue_id=>id)
+  	references=Array.new(comments.length) {Array.new}
+  	x=start
+  	if(x<numCheck)
+  		y=0
+ 		while(y<numCheck && y<comments.length)
+  			i=0
+  			while(i<y)
+  				if(comments[y].content.include?(comments[i].title) || comments[y].content.include?(comments[i].participant.first_name))
+  					references[i].push(comments[i])
+  				end
+  				i+=1
+  			end
+  			y+=1
+  		end
+  	end
+  	while(x< (comments.length - numCheck))
+  		i=x-numCheck
+  		while(i<x)
+  			if(comments[x].content.include?(comments[i].title) || comments[x].content.include?(comments[i].participant.first_name))
+  				references[i].push(comments[i])
+  			end
+  			i+=1
+  		end
+  		check=x-numCheck
+  		if(references[check].length>=minNoImg || (comments[check].has_image && references[check].length >= minWithImg))
+			idea = Idea.first_or_create({:comment=> comments[check]},{:status=>"Ongoing"})	
+			comments[check].ideasource = idea
+			tag = Tag.first_or_create({:name => "idea", :comment => comments[check]})
+			comments[x].save		
+		end
+  		x+=1
+  	end	  	
+  end
 
-=begin
+
+
+
 def find_recent_potential_participants_Dmapper
     issueid = Issue.first(:link => link).id
     res = Network.all()
@@ -429,6 +466,6 @@ def find_recent_potential_participants_Dmapper
 
     return potentials
   end  
-=end
+
 end
 

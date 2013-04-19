@@ -10,6 +10,7 @@ class Comment
   property :commented_at, DateTime
   property :summary, String,:length=>500
   property :patch, Boolean, :default => false
+  property :has_image, Boolean, :required => false
 
   belongs_to :participant
 
