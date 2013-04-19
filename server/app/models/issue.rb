@@ -43,8 +43,8 @@ class Issue
     potentials = Array.new
     potentials.concat(find_experienced_potential_participants)
     potentials.concat(find_patchsubmitter_potential_participants)
-    potentials.concat(find_consensus_potential_participants)
-    potentials.concat(find_recent_potential_participants)
+    potentials.concat(find_consensus_potential_participants_Dmapper)
+    potentials.concat(find_recent_potential_participants_Dmapper)
 
     return potentials.sample(30)
   end
@@ -62,7 +62,7 @@ class Issue
     description = ""
     #Experience
     if(currentParticipant.experience.nil?)
-      description.concat("experience info is not available")
+      description.concat("no experience info")
     else
       year = currentParticipant.experience/52
       yearString="years"
@@ -77,11 +77,11 @@ class Issue
       end
 
       if(year>0 and week>0)
-        description.concat("has #{year} #{yearString} and #{week} #{weekString} of experience")
+        description.concat("#{year} #{yearString} and #{week} #{weekString} experience")
       elsif(year>0)
-        description.concat("has #{year} #{yearString} of experience")
+        description.concat("#{year} #{yearString} experience")
       elsif(week>0)
-        description.concat("has #{week} #{weekString} of experience")
+        description.concat("#{week} #{weekString} experience")
       end
     end
 
@@ -90,14 +90,14 @@ class Issue
     if(currentParticipant.usabilityPatches==1)
       patchString = "patch"
     end
-    description.concat(", submitted #{currentParticipant.usabilityPatches} usability #{patchString}")
+    description.concat(", #{currentParticipant.usabilityPatches} usability #{patchString}")
 
     #Consensus Threads
     threadString = "threads"
     if(num==1)
       threadString = "thread"
     end
-    description.concat(", participated in #{num} #{threadString} that reached consensus")
+    description.concat(", #{num} closed #{threadString}")
 
     #Recent Participation
     date2 = Time.now
@@ -105,9 +105,9 @@ class Issue
     if(recency != 0 && !(recency.nil?))
       date1 = DateTime.rfc3339(recency.to_s)
       days = distance_of_time_in_words(date1, date2)
-      description.concat(", and last participated in a usability thread #{days} ago.")
+      description.concat(", recent participation #{days} ago.")
     else
-      description.concat(", and did not participate in a usability thread recently.")
+      description.concat(", not recently in a usability thread.")
     end
     
 
@@ -190,20 +190,32 @@ class Issue
 
 
  def find_consensus_potential_participants_Dmapper
-    adapter = DataMapper.repository(:default).adapter
     issueid = Issue.first(:link => link).id
-#    res = Network.all(:fields => [:participant_id], :conditions=>[Network.issue.status.like => "closed%", Network.participant.], :order => {}) + Network.all(Network.issue.status.like => "fix%");
-    res = adapter.select("SELECT t1.participant_id, COUNT(t2.status) AS cb FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY cb DESC;")
+    res = Network.all(:conditions=>{Network.issue.status.like => "closed%"}) + Network.all(:conditions=>{Network.issue.status.like => "fix%", :issue_id.not=>issueid})
+    res2 = Network.all(:conditions=>{:issue_id=>issueid})
     indx = 0
-    potentials = Array.new
+    participantIds = Array.new
     res.each do |row|
+      participantIds.push(row.participant_id);
+    end
+
+    currentParticipantIds = Array.new
+    res2.each do |row|
+      currentParticipantIds.push(row.participant_id);
+    end
+
+    participantIds=participantIds - currentParticipantIds
+
+    participantIds_counts = participantIds.group_by {|x| x}.sort_by {|x,list| [-list.size,x]}.map{|x| [x.first, x.second.size]}
+    potentials = Array.new
+    participantIds_counts.each do |row|
       currentParticipant = Participant.first(:id=>row[0]);
 
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
       recency = find_participant_recency(row[0])
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], recency)#Time.now)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], recency)
       
       potentials.push currentPInfo
       indx = indx + 1
@@ -269,7 +281,7 @@ class Issue
   def find_recent_potential_participants
     adapter = DataMapper.repository(:default).adapter
     issueid = Issue.first(:link => link).id
-    res = adapter.select("SELECT t1.participant_id, MAX(t1.commented_at) FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY t1.commented_at DESC;")
+    res = adapter.select("SELECT t1.participant_id, MAX(t1.commented_at) as mx FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY mx DESC;")
     indx = 0
     potentials = Array.new
     res.each do |row|
@@ -288,6 +300,34 @@ class Issue
 
     return potentials#.sample(10)
   end
+
+
+  def find_recent_potential_participants_Dmapper
+    issueid = Issue.first(:link => link).id
+    res = Network.all()
+    res2 = Network.all(:conditions=>{:issue_id=>issueid})
+    indx = 0
+    sortedRes = sorted = res.group_by {|x| x.participant_id}.sort_by {|x,list| [list.max_by{|y| y.commented_at}.commented_at,x]}.map{|x| x.second.max_by{|y| y.commented_at}}
+    sortedRes = sortedRes.find_all{|x| !(res2.map{|y| y.participant_id}.include?x.participant_id)}
+   
+    potentials = Array.new
+    sortedRes.reverse.each do |row|
+      currentParticipant = Participant.first(:id=>row.participant_id);
+
+      currentPInfo=Hash.new
+      currentPInfo["author"]=currentParticipant.user_name
+      currentPInfo["authorLink"]=currentParticipant.link
+      consensus = find_participant_consensus(row.participant_id)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, row.commented_at)
+      
+      potentials.push currentPInfo
+      indx = indx + 1
+      break if indx == 20
+    end			
+
+    return potentials#.sample(10)
+  end  
+
 
 #find conversations in a new thread
   def find_conversations(start,convoLen,maxContinuous)

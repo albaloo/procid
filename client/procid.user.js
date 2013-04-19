@@ -440,6 +440,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		var div1 = document.createElement('div');
 		div1.setAttribute('id', 'procid-comment');
 		var divinner = div1;
+		$("#procid-comment").css("border-image", "url("+ ABSOLUTEPATH +"/images/sidebar-border.png) 11 2 round");
 
 		$.each(commentInfo.tags, function() {
 			var divTag = document.createElement('div');
