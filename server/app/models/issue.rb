@@ -43,8 +43,8 @@ class Issue
     potentials = Array.new
     potentials.concat(find_experienced_potential_participants)
     potentials.concat(find_patchsubmitter_potential_participants)
-    potentials.concat(find_consensus_potential_participants_Dmapper)
-    potentials.concat(find_recent_potential_participants_Dmapper)
+    potentials.concat(find_consensus_potential_participants)
+    potentials.concat(find_recent_potential_participants)
 
     return potentials.sample(30)
   end
@@ -137,7 +137,7 @@ class Issue
       currentPInfo["authorLink"]=currentParticipant.link
       consensus = find_participant_consensus(p_id) 
       recency = find_participant_recency(p_id)
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, recency)#Time.now)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, recency)
       
       potentials.push currentPInfo
       indx = indx + 1
@@ -168,7 +168,7 @@ class Issue
       break if indx == 20
     end			
 
-    return potentials#.sample(10)
+    return potentials
   end
 
   #randomly selects 10 participants between 100 who create triads with current participants
@@ -185,30 +185,17 @@ class Issue
       break if indx == 20
     end			
 
-    return potentials#.sample(10)
+    return potentials
   end
 
-
- def find_consensus_potential_participants_Dmapper
+  #randomly selects 10 participants between 100 who have participated in threads that reached consensus
+  def find_consensus_potential_participants
+    adapter = DataMapper.repository(:default).adapter
     issueid = Issue.first(:link => link).id
-    res = Network.all(:conditions=>{Network.issue.status.like => "closed%"}) + Network.all(:conditions=>{Network.issue.status.like => "fix%", :issue_id.not=>issueid})
-    res2 = Network.all(:conditions=>{:issue_id=>issueid})
+    res = adapter.select("SELECT t1.participant_id, COUNT(t2.status) AS cb FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY participant_id ORDER BY cb DESC;")
     indx = 0
-    participantIds = Array.new
-    res.each do |row|
-      participantIds.push(row.participant_id);
-    end
-
-    currentParticipantIds = Array.new
-    res2.each do |row|
-      currentParticipantIds.push(row.participant_id);
-    end
-
-    participantIds=participantIds - currentParticipantIds
-
-    participantIds_counts = participantIds.group_by {|x| x}.sort_by {|x,list| [-list.size,x]}.map{|x| [x.first, x.second.size]}
     potentials = Array.new
-    participantIds_counts.each do |row|
+    res.each do |row|
       currentParticipant = Participant.first(:id=>row[0]);
 
       currentPInfo=Hash.new
@@ -222,66 +209,14 @@ class Issue
       break if indx == 20
     end			
 
-    return potentials#.sample(10)
-  end  
-
-
-  #randomly selects 10 participants between 100 who have participated in threads that reached consensus
-  def find_consensus_potential_participants
-    adapter = DataMapper.repository(:default).adapter
-    issueid = Issue.first(:link => link).id
-    res = adapter.select("SELECT t1.participant_id, COUNT(t2.status) AS cb FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY cb DESC;")
-    indx = 0
-    potentials = Array.new
-    res.each do |row|
-      currentParticipant = Participant.first(:id=>row[0]);
-
-      currentPInfo=Hash.new
-      currentPInfo["author"]=currentParticipant.user_name
-      currentPInfo["authorLink"]=currentParticipant.link
-      recency = find_participant_recency(row[0])
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], recency)#Time.now)
-      
-      potentials.push currentPInfo
-      indx = indx + 1
-      break if indx == 20
-    end			
-
-    return potentials#.sample(10)
-  end
-
-  #randomly selects 10 participants between 100 who have RECENTLY participated in threads that reached consensus
-  def find_recentconsensus_potential_participants
-    adapter = DataMapper.repository(:default).adapter
-    issueid = Issue.first(:link => link).id
-    res = adapter.select("SELECT t1.participant_id, COUNT(t2.status) AS cb FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY t1.commented_at DESC;")
-    indx = 0
-    potentials = Array.new
-    res.each do |row|
-      currentParticipant = Participant.first(:id=>row[0]);
-
-      currentPInfo=Hash.new
-      currentPInfo["author"]=currentParticipant.user_name
-      currentPInfo["authorLink"]=currentParticipant.link
-      threadString = "threads"
-      if(row[1]==1)
-        threadString = "thread"
-      end
-      currentPInfo["description"]="recently participated in #{row[1]} #{threadString} that reached consensus"
-      
-      potentials.push currentPInfo
-      indx = indx + 1
-      break if indx == 20
-    end			
-
-    return potentials#.sample(10)
+    return potentials
   end
 
   #randomly selects 10 participants between 100 who have RECENTLY participated in threads
   def find_recent_potential_participants
     adapter = DataMapper.repository(:default).adapter
     issueid = Issue.first(:link => link).id
-    res = adapter.select("SELECT t1.participant_id, MAX(t1.commented_at) as mx FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY t1.participant_id ORDER BY mx DESC;")
+    res = adapter.select("SELECT t1.participant_id, MAX(t1.commented_at) as mx FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY participant_id ORDER BY mx DESC;")
     indx = 0
     potentials = Array.new
     res.each do |row|
@@ -298,38 +233,33 @@ class Issue
       break if indx == 20
     end			
 
-    return potentials#.sample(10)
+    return potentials
   end
 
-
-  def find_recent_potential_participants_Dmapper
+  #randomly selects 10 participants between 100 who have RECENTLY participated in threads that reached consensus
+  def find_recentconsensus_potential_participants
+    adapter = DataMapper.repository(:default).adapter
     issueid = Issue.first(:link => link).id
-    res = Network.all()
-    res2 = Network.all(:conditions=>{:issue_id=>issueid})
+    res = adapter.select("SELECT t1.participant_id, COUNT(t2.status) AS cb, t1.commented_at FROM (networks AS t1 INNER JOIN issues AS t2 ON t1.issue_id=t2.id) WHERE (t2.status LIKE 'closed%' OR t2.status LIKE 'fix%') AND t1.participant_id IN (SELECT id FROM participants WHERE NOT EXISTS (SELECT participant_id, issue_id FROM networks WHERE networks.participant_id=participants.id AND networks.issue_id=#{issueid})) GROUP BY participant_id ORDER BY commented_at DESC;")
     indx = 0
-    sortedRes = sorted = res.group_by {|x| x.participant_id}.sort_by {|x,list| [list.max_by{|y| y.commented_at}.commented_at,x]}.map{|x| x.second.max_by{|y| y.commented_at}}
-    sortedRes = sortedRes.find_all{|x| !(res2.map{|y| y.participant_id}.include?x.participant_id)}
-   
     potentials = Array.new
-    sortedRes.reverse.each do |row|
-      currentParticipant = Participant.first(:id=>row.participant_id);
+    res.each do |row|
+      currentParticipant = Participant.first(:id=>row[0]);
 
       currentPInfo=Hash.new
       currentPInfo["author"]=currentParticipant.user_name
       currentPInfo["authorLink"]=currentParticipant.link
-      consensus = find_participant_consensus(row.participant_id)
-      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, row.commented_at)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], row[2])
       
       potentials.push currentPInfo
       indx = indx + 1
       break if indx == 20
     end			
 
-    return potentials#.sample(10)
-  end  
+    return potentials
+  end
 
-
-#find conversations in a new thread
+  #find conversations in a new thread
   def find_conversations(start,convoLen,maxContinuous)
   	comments = Comment.all(:issue_id=>id)
   	x=start
@@ -437,13 +367,68 @@ class Issue
   	end
   end
 
+=begin
+def find_recent_potential_participants_Dmapper
+    issueid = Issue.first(:link => link).id
+    res = Network.all()
+    res2 = Network.all(:conditions=>{:issue_id=>issueid})
+    indx = 0
+    sortedRes = sorted = res.group_by {|x| x.participant_id}.sort_by {|x,list| [list.max_by{|y| y.commented_at}.commented_at,x]}.map{|x| x.second.max_by{|y| y.commented_at}}
+    sortedRes = sortedRes.find_all{|x| !(res2.map{|y| y.participant_id}.include?x.participant_id)}
+   
+    potentials = Array.new
+    sortedRes.reverse.each do |row|
+      currentParticipant = Participant.first(:id=>row.participant_id);
+
+      currentPInfo=Hash.new
+      currentPInfo["author"]=currentParticipant.user_name
+      currentPInfo["authorLink"]=currentParticipant.link
+      consensus = find_participant_consensus(row.participant_id)
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, consensus, row.commented_at)
+      
+      potentials.push currentPInfo
+      indx = indx + 1
+      break if indx == 20
+    end			
+
+    return potentials
+  end  
+
+  def find_consensus_potential_participants_Dmapper
+    issueid = Issue.first(:link => link).id
+    res = Network.all(:conditions=>{Network.issue.status.like => "closed%"}) + Network.all(:conditions=>{Network.issue.status.like => "fix%", :issue_id.not=>issueid})
+    res2 = Network.all(:conditions=>{:issue_id=>issueid})
+    indx = 0
+    participantIds = Array.new
+    res.each do |row|
+      participantIds.push(row.participant_id);
+    end
+
+    currentParticipantIds = Array.new
+    res2.each do |row|
+      currentParticipantIds.push(row.participant_id);
+    end
+
+    participantIds=participantIds - currentParticipantIds
+
+    participantIds_counts = participantIds.group_by {|x| x}.sort_by {|x,list| [-list.size,x]}.map{|x| [x.first, x.second.size]}
+    potentials = Array.new
+    participantIds_counts.each do |row|
+      currentParticipant = Participant.first(:id=>row[0]);
+
+      currentPInfo=Hash.new
+      currentPInfo["author"]=currentParticipant.user_name
+      currentPInfo["authorLink"]=currentParticipant.link
+      recency = find_participant_recency(row[0])
+      currentPInfo["description"]= gather_participant_info_description(currentParticipant, row[1], recency)
+      
+      potentials.push currentPInfo
+      indx = indx + 1
+      break if indx == 20
+    end			
+
+    return potentials
+  end  
+=end
 end
-
-#inner Join: select t1.participant_id from networks as t1 inner join issues as t2 on t1.issue_id=t2.id;
-#select consensus ones:  select t1.participant_id from (networks as t1 inner join issues as t2 on t1.issue_id=t2.id) where t2.status like "closed%" or t2.status like "fix%";
-#select num consensus and participant id: select t1.participant_id, count(t2.status) from (networks as t1 inner join issues as t2 on t1.issue_id=t2.id) where t2.status like "closed%" or t2.status like "fix%" group by t1.participant_id;
-
-#result: select t1.participant_id, count(t2.status) as cb from (networks as t1 inner join issues as t2 on t1.issue_id=t2.id) where (t2.status like "closed%" or t2.status like "fix%") and t1.issue_id <> 100 group by t1.participant_id order by cb desc;
-
-#select id from participants where not exists (select participant_id, issue_id from networks where networks.participant_id=participants.id and networks.issue_id=100) into outfile './participants.txt';
 
