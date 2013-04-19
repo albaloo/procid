@@ -9,6 +9,7 @@
 // @include        https://drupal.org/*
 // @include        http://*.drupal.org/*
 // @include        https://*.drupal.org/*
+// @include        https://web.engr.illinois.edu/~rzilouc2/procid/example*
 // ==/UserScript==
 
 // a function that loads head.js which then loads jQuery and d3
