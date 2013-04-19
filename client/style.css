@@ -184,7 +184,7 @@
 	border-color: #000;
 }
 
-#procid-comment {
+.procid-comment {
 	color: #666;
 	font-family: 'Lucida Grande', sans serif;
 	font-size: 12px;
@@ -195,7 +195,7 @@
 	/*border-image: url(./images/sidebar-border.png) 11 2 round;*/
 }
 
-#procid-comment a.selected {
+.procid-comment a.selected {
 	color: #000;
 	font-family: 'Lucida Grande', sans serif;
 	font-size: 12px;
@@ -203,7 +203,7 @@
 	line-height: 1.5em;
 }
 
-#procid-comment a.unselected {
+.procid-comment a.unselected {
 	color: #898989;
 	font-family: 'Lucida Grande', sans serif;
 	font-size: 12px;

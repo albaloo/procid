@@ -235,14 +235,14 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		if(name == "procid-search"){
 			//Search comments
 			$("#" + name + "-input-form").keyup(function() {
-				$("div[id='procid-comment'] a").map(function() {
+				$("div[class='procid-comment'] a").map(function() {
 					var value = $("#" + name + "-input-form").val().toLowerCase();
 					var currentText = $(this).text().toLowerCase();
-					console.log("currentText" + currentText) ;
+					
 					if(currentText.indexOf(value) === -1)
-						$(this).parent().css("display","none");
+						$(this).parents(".procid-comment").css("display","none");
 					else
-						$(this).parent().css("display","block");
+						$(this).parents(".procid-comment").css("display","block");
 				});
 			});
 		}else{
@@ -251,7 +251,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 				$("div[id='procid-invite-block'] div[id='procid-author-name']").map(function() {
 					var value = $("#" + name + "-input-form").val().toLowerCase();
 					var currentText = $(this).text().toLowerCase();
-					console.log("currentText" + currentText) ;
+					
 					if(currentText.indexOf(value) === -1)
 						$(this).parent().css("display","none");
 					else
@@ -438,9 +438,11 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 	
 	var applyTags = function(commentInfo) {
 		var div1 = document.createElement('div');
-		div1.setAttribute('id', 'procid-comment');
+		div1.setAttribute('class', 'procid-comment');
 		var divinner = div1;
-		$("#procid-comment").css("border-image", "url("+ ABSOLUTEPATH +"/images/sidebar-border.png) 11 2 round");
+		$(".procid-comment").map(function(){
+			$(this).css("border-image", "url("+ ABSOLUTEPATH +"/images/sidebar_border.png) 11 2 round");
+			});
 
 		$.each(commentInfo.tags, function() {
 			var divTag = document.createElement('div');
@@ -452,7 +454,7 @@ head.js("//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js", "//cdnjs.c
 		$('<img />').attr({
 			id : 'procid-selected-comment-image',
 			class : 'image-unselected',
-			src : ABSOLUTEPATH + '/images/patch.png',
+			src : ABSOLUTEPATH + '/images/patch-tiny.png',
 		}).appendTo(divinner);
 
 		$('<a />').attr({
